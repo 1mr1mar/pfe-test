@@ -1,11 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
+
+//backgroun pic
 const backgrounds = [
   "/pic/main-img-5.jpg",
   "/pic/menu3.jpg",
   "/pic/main-img-1.jpg",
+];
+
+// text for each pic
+const texts = [
+  {
+    title: "Creative Design & Architecture",
+    description: "Innovative solutions for modern spaces and timeless aesthetics",
+  },
+  {
+    title: "Modern Living Spaces",
+    description: "Experience the perfect blend of comfort and design",
+  },
+  {
+    title: "Architecture & Innovation",
+    description: "Transforming ideas into reality with cutting-edge designs",
+  },
 ];
 
 const Hero = () => {
@@ -14,21 +34,35 @@ const Hero = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setBgIndex((prevIndex) => (prevIndex + 1) % backgrounds.length);
-    }, 6000); // مدة عرض الخلفية: 6 ثوانٍ
+    }, 6000); 
 
     return () => clearInterval(interval);
   }, []);
 
+  // وظيفة لتطبيق تأثير parallax على الخلفية
+  const handleScroll = () => {
+    const scrollPosition = window.scrollY;
+    const bgElement = document.querySelector(".hero-background");
+    if (bgElement) {
+      bgElement.style.transform = `translateY(${scrollPosition * 0.5}px)`; // خلفية تتحرك بمعدل 0.5 من سرعة التمرير
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <section id="home" className="relative h-screen flex items-center">
-      {/* حاوية الخلفية والمحتوى معًا */}
-      <div className="absolute inset-0 w-full h-full">
+      {/* backgroun and contint */}
+      <div className="absolute inset-0 w-full h-full hero-background">
         <AnimatePresence>
           <motion.div
-            key={bgIndex} // المفتاح يساعد في تطبيق الأنيميشن عند تغيير الخلفية
-            initial={{ opacity: 0 }} // تبدأ الخلفية بشفافية 0
-            animate={{ opacity: 1 }} // عندما تظهر تكون الشفافية 1
-            exit={{ opacity: 0 }} // عند مغادرة الصورة تتلاشى
+            key={bgIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{
               duration: 3,
               ease: "easeInOut",
@@ -36,15 +70,17 @@ const Hero = () => {
             className="absolute inset-0 w-full h-full bg-cover bg-center flex items-center justify-center"
             style={{
               backgroundImage: `url(${backgrounds[bgIndex]})`,
+              backgroundAttachment: 'fixed',
+              backgroundPosition: 'center',
             }}
           >
             {/* المحتوى الذي يظهر مع الخلفية */}
             <div className="text-white text-center px-6">
               {/* حركة العنوان */}
               <motion.h1
-                initial={{ opacity: 0, y: 50 }} // يبدأ من الأسفل
-                animate={{ opacity: 1, y: 0 }} // يتحرك إلى موضعه الطبيعي
-                exit={{ opacity: 0, y: -50 }} // يتلاشى ويرتفع للأعلى عند الخروج
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
                 transition={{
                   duration: 1.5,
                   ease: "easeOut",
@@ -52,14 +88,14 @@ const Hero = () => {
                 }}
                 className="text-5xl md:text-6xl font-light mb-6"
               >
-                Creative Design & Architecture
+                {texts[bgIndex].title}
               </motion.h1>
 
               {/* حركة النص */}
               <motion.p
-                initial={{ opacity: 0, y: 50 }} // يبدأ من الأسفل
-                animate={{ opacity: 1, y: 0 }} // يتحرك إلى موضعه الطبيعي
-                exit={{ opacity: 0, y: -50 }} // يتلاشى ويرتفع للأعلى عند الخروج
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
                 transition={{
                   duration: 1.5,
                   ease: "easeOut",
@@ -67,7 +103,7 @@ const Hero = () => {
                 }}
                 className="text-xl text-gray-300 mb-8 font-light"
               >
-                Innovative solutions for modern spaces and timeless aesthetics
+                {texts[bgIndex].description}
               </motion.p>
 
               {/* الزر مع الحركة */}

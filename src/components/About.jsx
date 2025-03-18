@@ -1,27 +1,36 @@
-import React from 'react';
+import React from "react";
+import { motion } from "framer-motion";
+import SvgIcon from './costumsvg';
 
 const About = () => {
   return (
-    <section id="about" className="py-20">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row">
-          <div className="md:w-1/2 mb-8 md:mb-0">
-            <h2 className="text-3xl font-light mb-4">About Us</h2>
-            <p className="text-gray-600 mb-6 font-light">
-              We are a creative design studio focused on architecture, interior design, and visual identity.
-              Our approach combines functionality with aesthetics to create spaces that inspire.
-            </p>
-            <p className="text-gray-600 font-light">
-              Founded in 2015, we have completed over 100 projects worldwide, each reflecting our commitment
-              to innovative design solutions.
-            </p>
-          </div>
-          <div className="md:w-1/2 md:pl-12">
-            <div className="h-64 md:h-full bg-gray-300 flex items-center justify-center">
-              <span className="text-gray-500">Image Placeholder</span>
-            </div>
-          </div>
+    <section
+      id="about"
+      className="relative min-h-screen flex flex-col items-center justify-center bg-emerald-950 text-white px-6 py-12"
+    >
+      {/* contint */}
+      <p className="text-lg uppercase text-gray-400 tracking-wide">Our Story</p>
+      <h1 className="text-5xl md:text-6xl font-bold mb-6">About Us</h1>
+      <p className="text-lg text-gray-300 max-w-2xl text-center mb-12">
+        Welcome to our restaurant, where we blend tradition with innovation to
+        create unforgettable dining experiences.
+      </p>
+
+      {/* pic and SVG */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-20 w-full max-w-5xl">
+        <img
+          src="/pic/inner-pages-img-16.jpg"
+          alt="Restaurant Interior"
+          className="w-full md:w-2/5 object-cover rounded-lg shadow-lg" 
+        />
+        <div className="w-full md:w-2/5 flex justify-center">
+        <SvgIcon />
         </div>
+        <img
+          src="/pic/menu6.jpg"
+          alt="Delicious Dish"
+          className="w-full md:w-2/5 object-cover rounded-lg shadow-lg" 
+        />
       </div>
     </section>
   );

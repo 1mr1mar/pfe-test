@@ -12,6 +12,7 @@ export default {
       extend: {
         fontFamily: {
             'roboto': ['Roboto', 'sans-serif'],
+            custom: ['font1', 'sans-serif'],
           },
           fontWeight: {
             'light': 300,

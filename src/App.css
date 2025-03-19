@@ -18,3 +18,11 @@ body {
   .font-roboto {
     font-family: 'Roboto', sans-serif;
   }
+  @font-face {
+    font-family: 'font1';
+    src: url('./assets/fonts/font1.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  

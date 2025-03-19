@@ -9,7 +9,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-transparent fixed text-amber-300 shadow-md w-full top-0 left-0 p-4 z-50 border-b border-amber-500">
+    <nav className="bg-transparent  text-white shadow-md w-full top-0 left-0 p-4 z-50 fixed border-b border-yellow-gold">
       <div className="container mx-auto flex items-center w-full justify-center relative">
         
         {/* Desktop Menu */}

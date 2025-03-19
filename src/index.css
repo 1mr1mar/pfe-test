@@ -10,3 +10,19 @@
 html {
     scroll-behavior: smooth;
   }
+
+@theme{
+  --color-green-ziti:#0B1315;
+  --color-yellow-gold:#C9AB81;
+  --color-green-khzy:#0F1D22;
+}
+@font-face {
+  font-family: 'font1';
+  src: url('./assets/fonts/font1.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'font1', sans-serif;
+}

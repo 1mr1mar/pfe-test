@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "./gallery.css";
+import Svg from "./svgn2";
 
 
 const Gallery = () => {
@@ -55,25 +57,28 @@ const Gallery = () => {
   };
 
   return (
-    <section className="py-16 bg-gray-900 text-white">
+    <section className="py-16 bg-green-khzy ">
       <div className="container mx-auto px-6">
         <Slider {...settings}>
           {products.map((product) => (
             <div
+            style={{display:"flex"}}
               key={product.id}
-              className="flex flex-row-reverse items-center justify-between gap-12 py-6"
+              className=" flex w-full items-center justify-between gap-12 py-6  card"
             >
-              {/* الصورة */}
-              <div className="w-96 h-96 flex justify-center items-center md:w-1/3">
+             {/*prosuct pic */}
+              <div className="w-150 h-150 flex-1/2 justify-center items-center md:w-1/3">
                 <img
                   src={product.image}
                   alt={`Product ${product.id}`}
-                  className="w-full h-full object-cover rounded-lg shadow-lg border-4 border-amber-500"
+                  className="w-full h-full object-cover  shadow-lg  "
                 />
               </div>
-              {/* الوصف */}
-              <div className="w-full md:w-2/3 text-center md:text-left">
-                <p className="text-xl font-semibold">{product.description}</p>
+             {/*prosuct des */}
+              <div className="w-full flex-1/2 md:w-2/3 text-center md:text-left">
+                <p className="text-yellow-gold">Recommendation</p>
+                <h1 className="text-yellow-gold flex gap-x-4 items-center"><Svg/> Our best specialties <Svg/></h1>
+                <p className="text-xl text-yellow-gold font-semibold">{product.description}</p>
               </div>
             </div>
           ))}

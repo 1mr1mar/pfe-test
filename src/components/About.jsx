@@ -1,16 +1,18 @@
 import React from "react";
 import { motion } from "framer-motion";
 import SvgIcon from './costumsvg';
+import Svg from "./svgn2";
+import "../App.css";
 
 const About = () => {
   return (
     <section
       id="about"
-      className="relative min-h-screen flex flex-col items-center justify-center bg-emerald-950 text-white px-6 py-12"
+      className="relative min-h-screen flex flex-col items-center justify-center bg-green-ziti text-yellow-gold px-6 py-12"
     >
       {/* contint */}
-      <p className="text-lg uppercase text-gray-400 tracking-wide">Our Story</p>
-      <h1 className="text-5xl md:text-6xl font-bold mb-6">About Us</h1>
+      <p className="text-lg uppercase text-yellow-gold tracking-wide">Our Story</p>
+      <h1 className="text-5xl flex gap-x-4 items-center md:text-6xl font-bold mb-6"  style={{fontFamily: 'font1, sans-serif',}}><Svg/> About Us <Svg/></h1>
       <p className="text-lg text-gray-300 max-w-2xl text-center mb-12">
         Welcome to our restaurant, where we blend tradition with innovation to
         create unforgettable dining experiences.

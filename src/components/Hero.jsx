@@ -58,7 +58,7 @@ const Hero = () => {
   return (
     <>
       
-      <section id="home" className="relative h-screen flex items-center">
+      <section id="home" className="relative z-21 h-screen flex items-center">
         {/* backgroun and contint */}
         <div className="absolute inset-0 w-full h-full hero-background">
           <AnimatePresence>
@@ -89,8 +89,8 @@ const Hero = () => {
                     ease: "easeOut",
                     delay: 0.5,
                   }}
-                  className="text-[12rem] gap-x-4 items-center  flex md:text-6xl font-custom mb-6"
-                  style={{fontFamily: 'font1, sans-serif',fontSize: '18rem !important'}}
+                  className="text-[12rem] gap-x-4 items-center   flex md:text-6xl font-custom mb-6"
+                  style={{fontFamily: 'font1, sans-serif',fontSize: '20rem !important'}}
                 >
                   <Svg/>{ texts[bgIndex].title}<Svg/>
                 </motion.h1>
@@ -113,7 +113,7 @@ const Hero = () => {
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-gold text-yellow-gold px-8 py-3 flex items-center   transition-colors duration-300 uppercase text-sm tracking-widest border-yellow-gold"
+                  className="text-yellow-gold flex px-6 py-3 border-2 border-yellow-gold text-lg font-medium  transition duration-300 shadow-lg transform hover:scale-105"
                 >
                   View Portfolio
                   <ArrowRight className="ml-2" size={20} />

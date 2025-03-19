@@ -5,7 +5,6 @@ import "slick-carousel/slick/slick-theme.css";
 import "./gallery.css";
 import Svg from "./svgn2";
 
-
 const Gallery = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -57,27 +56,39 @@ const Gallery = () => {
   };
 
   return (
-    <section className="py-16 bg-green-khzy ">
-      <div className="container mx-auto px-6">
+    <section className="py-16 z-20 bg-green-khzy ">
+      <h1
+        className="text-5xl text-center z-20 gap-x-4 items-center md:text-6xl text-yellow-gold mb-6"
+        style={{ fontFamily: 'font1, sans-serif' }}
+      >
+        <span className="flex gap-x-4 justify-center items-center">
+          <Svg /> Gallery <Svg />
+        </span>
+      </h1>
+      <div className="container z-20 mx-auto px-6">
         <Slider {...settings}>
           {products.map((product) => (
             <div
-            style={{display:"flex"}}
+              style={{ display: "flex" }}
               key={product.id}
-              className=" flex w-full items-center justify-between gap-12 py-6  card"
+              className="flex w-full items-center justify-between gap-12 py-6 card"
             >
-             {/*prosuct pic */}
+              {/* Product pic */}
               <div className="w-150 h-150 flex-1/2 justify-center items-center md:w-1/3">
                 <img
                   src={product.image}
                   alt={`Product ${product.id}`}
-                  className="w-full h-full object-cover  shadow-lg  "
+                  className="w-full h-full object-cover shadow-lg"
                 />
               </div>
-             {/*prosuct des */}
+              {/* Product description */}
               <div className="w-full flex-1/2 md:w-2/3 text-center md:text-left">
-                <p className="text-yellow-gold">Recommendation</p>
-                <h1 className="text-yellow-gold flex gap-x-4 items-center"><Svg/> Our best specialties <Svg/></h1>
+                <p className="text-yellow-gold text-center">Recommendation</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-yellow-gold text-center mb-4">
+                  <span className="flex justify-center gap-x-4 items-center">
+                    <Svg /> Our best specialties <Svg />
+                  </span>
+                </h1>
                 <p className="text-xl text-yellow-gold font-semibold">{product.description}</p>
               </div>
             </div>

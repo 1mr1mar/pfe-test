@@ -1,4 +1,6 @@
 import React from "react";
+import SvgIcon3 from "./svgn3";
+import Svg from "./svgn2";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -82,8 +84,13 @@ const Menu = () => {
         <p className="text-sm text-center text-yellow-gold tracking-wide uppercase">
           Special Selection
         </p>
-        <h2 className="text-4xl font-bold text-center text-yellow-gold my-4 tracking-wider">
-          From Our Menu
+        <h2
+          className="text-4xl  text-center text-yellow-gold my-4 tracking-wider"
+          style={{ fontFamily: "font1, sans-serif" }}
+        >
+          <span className="flex justify-center gap-x-4 items-center">
+            <Svg /> Our best specialties <Svg />
+          </span>
         </h2>
 
         <div className="grid grid-cols-2 gap-8 mt-8">
@@ -101,10 +108,13 @@ const Menu = () => {
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-yellow-gold text-gray-900 px-6 py-3 rounded-full text-lg font-medium hover:bg-amber-600 transition duration-300 shadow-lg transform hover:scale-105">
+          <button className="text-yellow-gold px-6 py-3 border-2 border-yellow-gold text-lg font-medium  transition duration-300 shadow-lg transform hover:scale-105">
             View All
           </button>
         </div>
+      </div>
+      <div className=" ">
+        <SvgIcon3 />
       </div>
     </section>
   );

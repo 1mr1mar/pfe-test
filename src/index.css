@@ -25,5 +25,9 @@ html {
 }
 
 body {
-  font-family: 'font1', sans-serif;
+  font-family: "Josefin Sans", sans-serif;
+}
+.jdid{
+  font-family: "Miniver", cursive;
+  font-weight: 400;
 }

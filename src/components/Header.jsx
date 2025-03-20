@@ -1,72 +1,95 @@
-import React from 'react';
+import React, { useState } from "react";
+import { Menu, X } from "lucide-react";
 
-const MenuItem = ({ name, description, price, image }) => {
-  return (
-    <div className="flex flex-col items-start px-4 py-6 border-b border-gray-600">
-      {/* صورة الطبق */}
-      <img src={image} alt={name} className="w-full h-48 object-cover rounded-lg mb-4" />
+function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-      {/* اسم الطبق و السعر */}
-      <div className="flex justify-between w-full mb-2">
-        <h3 className="text-lg font-semibold text-amber-500 uppercase tracking-wide">{name}</h3>
-        <p className="text-lg font-bold text-amber-500">${price}</p>
-      </div>
-
-      {/* الخط الفاصل */}
-      <div className="border-t-2 border-gray-600 w-full my-2"></div>
-
-      {/* وصف الطبق */}
-      <p className="text-gray-400 text-sm">{description}</p>
-    </div>
-  );
-};
-
-const Menu = () => {
-  const menuItems = [
-    { name: 'Beef Burger Meal', description: 'Classic Greek salad, barrel aged feta cheese, bread', price: '32', image: 'https://via.placeholder.com/400x300' },
-    { name: 'Roasted Lamb Rump', description: 'Grilled lamb cutlets, pomegranate glaze, butternut squash', price: '25', image: 'https://via.placeholder.com/400x300' },
-    { name: 'Pan Seared Sea Bass', description: 'Saffron and mussel’s broth, new potatoes, edamame beans', price: '38', image: 'https://via.placeholder.com/400x300' },
-    { name: 'King Prawns and Lobster', description: 'Creamy saffron, sauce Vierge', price: '38', image: 'https://via.placeholder.com/400x300' },
-    { name: 'Citrus Cured Salmon', description: 'Horseradish creme fraiche, beetroot mousse, oil', price: '41', image: 'https://via.placeholder.com/400x300' },
-    { name: 'Pan Seared Scallops', description: 'Saffron, celeriac puree, black pudding, olive oil', price: '29', image: 'https://via.placeholder.com/400x300' },
-    { name: 'Baked Camembert', description: 'Red onion marmalade, garlic focaccia bread, grilled figs', price: '25', image: 'https://via.placeholder.com/400x300' },
-    { name: 'Braised Ox Cheek Ravioli', description: 'Mediterranean olives casserole, celeriac puree, mushrooms', price: '23', image: 'https://via.placeholder.com/400x300' },
-    { name: 'Corn Fed Chicken', description: 'Wild mushrooms, truffle potatoes, braised leeks, carrots', price: '17', image: 'https://via.placeholder.com/400x300' },
-    { name: 'Nduja Pork Chicken Terrine', description: 'Smoked duck breast, pistachio, smoked pancetta', price: '41', image: 'https://via.placeholder.com/400x300' },
-  ];
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white px-6 py-12">
-      {/* العنوان */}
-      <p className="text-sm text-center text-amber-500 tracking-wide uppercase">Special Selection</p>
-      <h2 className="text-4xl font-bold text-center text-white my-4 tracking-wider">From Our Menu</h2>
+    <nav className="bg-transparent  text-white shadow-md w-full top-0 left-0 p-4 z-50 fixed border-b border-yellow-gold">
+      <div className="container mx-auto flex items-center w-full justify-center relative">
+        
+        {/* Desktop Menu */}
+        <div className="hidden lg:flex items-center text-lg space-x-6 xl:space-x-10">
+          <a href="#" className="text-lg hover:text-white transition duration-300">
+            HOME
+          </a>
+          <a href="#" className="hover:text-white transition duration-300">
+            About
+          </a>
+          <a href="#" className="hover:text-white transition duration-300">
+            Gallery
+          </a>
 
-      {/* عرض القائمة */}
-      <div className="grid grid-cols-2 gap-20 mt-8">
-        {/* First column */}
-        <div>
-          {menuItems.slice(0, 5).map((item, index) => (
-            <MenuItem key={index} {...item} />
-          ))}
+          {/* Logo in the center */}
+          <img
+            src="/pic/logo1.png"
+            alt="Logo"
+            className="h-12 md:h-20 shadow-lg hover:opacity-80 transition duration-300 mx-6"
+          />
+
+          <a href="#" className="hover:text-white transition duration-300">
+            Menu
+          </a>
+          <a href="#" className="hover:text-white transition duration-300">
+            Our Chef
+          </a>
+          <a href="#" className="hover:text-white transition duration-300">
+            Contact Us
+          </a>
         </div>
 
-        {/* Second column */}
-        <div>
-          {menuItems.slice(5).map((item, index) => (
-            <MenuItem key={index} {...item} />
-          ))}
+        {/* Mobile Menu Button */}
+        <div className="lg:hidden absolute right-4">
+          <button 
+            onClick={toggleMenu}
+            className="text-amber-300 hover:text-white transition duration-300"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
 
-      {/* زر عرض المزيد */}
-      <div className="text-center mt-12">
-        <button 
-          className="bg-amber-500 text-gray-900 px-6 py-3 rounded-full text-lg font-medium hover:bg-amber-600 transition duration-300 shadow-lg transform hover:scale-105">
-          View All
-        </button>
-      </div>
-    </div>
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="lg:hidden bg-transparent bg-opacity-90 shadow-lg mt-4 p-4 rounded-md flex flex-col items-center">
+          <div className="flex justify-center mb-4">
+            <img
+              src="/pic/logo1.png"
+              alt="Logo"
+              className="h-16 shadow-lg hover:opacity-80 transition duration-300"
+            />
+          </div>
+          <a href="#" className="block text-lg hover:text-white transition duration-300 text-center">
+            HOME
+          </a>
+          <a href="#" className="block hover:text-white transition duration-300 text-center">
+            About
+          </a>
+          <a href="#" className="block hover:text-white transition duration-300 text-center">
+            Gallery
+          </a>
+          <a href="#" className="block hover:text-white transition duration-300 text-center">
+            Menu
+          </a>
+          <a href="#" className="block hover:text-white transition duration-300 text-center">
+            Our Chef
+          </a>
+          <a href="#" className="block hover:text-white transition duration-300 text-center">
+            Contact Us
+          </a>
+          <div className="flex justify-center mt-4">
+            <button className="bg-amber-300 text-black px-4 py-2 shadow-md hover:bg-amber-400 transition duration-300">
+              BOOK NOW
+            </button>
+          </div>
+        </div>
+      )}
+    </nav>
   );
-};
+}
 
-export default Menu;
+export default Navbar;

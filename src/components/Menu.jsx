@@ -79,9 +79,9 @@ const Menu = () => {
   ];
 
   return (
-    <section className=" px-6 bg-green-ziti">
+    <section className=" relative px-6 bg-green-ziti">
       <div className=" container pt-45 mx-auto px-6 bg-green-ziti  ">
-        <p className="text-sm text-center text-yellow-gold tracking-wide uppercase">
+        <p className=" jdid text-sm text-center text-yellow-gold tracking-wide uppercase">
           Special Selection
         </p>
         <h2
@@ -108,12 +108,12 @@ const Menu = () => {
         </div>
 
         <div className="text-center mt-12">
-          <button className="text-yellow-gold px-6 py-3 border-2 border-yellow-gold text-lg font-medium  transition duration-300 shadow-lg transform hover:scale-105">
+          <button className="text-yellow-gold mt-10 mb-20 px-6 py-3 border-2 border-yellow-gold text-lg font-medium  transition duration-300 shadow-lg transform hover:scale-105">
             View All
           </button>
         </div>
       </div>
-      <div className=" ">
+      <div className="absolute right-0 bottom-0 ">
         <SvgIcon3 />
       </div>
     </section>

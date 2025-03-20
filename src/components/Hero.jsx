@@ -3,29 +3,33 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Navbar from "./Navbar";
 import Svg from "./svgn2";
+import Herosvg from "../herosvg";
 import "../App.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-//backgroun pic
+// background images
 const backgrounds = [
   "/pic/home-8-img-shop-5.jpg",
   "/pic/menu1.jpg",
   "/pic/main-img-1.jpg",
 ];
 
-// text for each pic
+// text for each background image
 const texts = [
   {
+    tage: "Wellcom to our delicious corner",
     title: "Creative Design & Architecture",
     description:
       "Innovative solutions for modern spaces and timeless aesthetics",
   },
   {
+    tage: "Wellcom to our delicious corner",
     title: "Modern Living Spaces",
     description: "Experience the perfect blend of comfort and design",
   },
   {
+    tage: "Wellcom to our delicious corner",
     title: "Architecture & Innovation",
     description: "Transforming ideas into reality with cutting-edge designs",
   },
@@ -56,74 +60,113 @@ const Hero = () => {
   }, []);
 
   return (
-    <>
+    <section id="home" className="relative z-21 h-screen flex items-center">
+      {/* background and content */}
+      <div className="absolute inset-0 w-full h-full hero-background">
+        <AnimatePresence>
+          <motion.div
+            key={bgIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 3,
+              ease: "easeInOut",
+            }}
+            className="absolute inset-0 w-full h-full bg-cover bg-center flex items-center justify-center"
+            style={{
+              backgroundImage: `url(${backgrounds[bgIndex]})`,
+              backgroundAttachment: "fixed",
+              backgroundPosition: "center",
+            }}
+          >
+            <Navbar />
+            <div className="text-yellow-gold text-center items-center px-6">
+              {/* Tagline with new animation */}
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{
+                  duration: 1.5,
+                  ease: "easeOut",
+                  delay: 0.7,
+                }}
+                className="text-xl jdid text-yellow-gold mb-8 font-light tracking-wider"
+              >
+                {texts[bgIndex].tage}
+              </motion.p>
+
+              {/* Title with enhanced animation */}
+              <motion.h1
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{
+                  duration: 1.5,
+                  ease: "easeOut",
+                  delay: 0.5,
+                }}
+                className="text-[15rem] gap-x-4 items-center flex md:text-7xl font-custom mb-6 relative"
+                style={{
+                  fontFamily: "font1, sans-serif",
+                  fontSize: "25rem !important", // Increased font size
+                }}
+              >
+                {/* Left positioned SVG (Edge of the screen) */}
+                <Svg />
+                {texts[bgIndex].title}
+                {/* Right positioned SVG (Edge of the screen) */}
+                <Svg />
+              </motion.h1>
+
+              {/* Description with smoother animation */}
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{
+                  duration: 1.5,
+                  ease: "easeOut",
+                  delay: 1,
+                }}
+                className="text-xl text-gray-300 mb-8 font-light"
+              >
+                {texts[bgIndex].description}
+              </motion.p>
+
+              {/* Button with enhanced animation */}
+              <motion.button
+                whileHover={{ scale: 1.1, backgroundColor: "#ffcc00" }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{
+                  duration: 1.5,
+                  ease: "easeOut",
+                  delay: 1.5,
+                }}
+                className="text-yellow-gold flex mx-auto px-6 py-3 border-2 border-yellow-gold text-lg font-medium transition duration-300 shadow-lg transform hover:scale-105"
+              >
+                View Portfolio
+                <ArrowRight className="ml-2" size={20} />
+              </motion.button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
       
-      <section id="home" className="relative z-21 h-screen flex items-center">
-        {/* backgroun and contint */}
-        <div className="absolute inset-0 w-full h-full hero-background">
-          <AnimatePresence>
-            <motion.div
-              key={bgIndex}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{
-                duration: 3,
-                ease: "easeInOut",
-              }}
-              className="absolute inset-0 w-full h-full bg-cover bg-center flex items-center justify-center"
-              style={{
-                backgroundImage: `url(${backgrounds[bgIndex]})`,
-                backgroundAttachment: "fixed",
-                backgroundPosition: "center",
-              }}
-            >
-              <Navbar />
-              <div className="text-yellow-gold text-center items-center px-6">
-                <motion.h1
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -50 }}
-                  transition={{
-                    duration: 1.5,
-                    ease: "easeOut",
-                    delay: 0.5,
-                  }}
-                  className="text-[12rem] gap-x-4 items-center   flex md:text-6xl font-custom mb-6"
-                  style={{fontFamily: 'font1, sans-serif',fontSize: '20rem !important'}}
-                >
-                  <Svg/>{ texts[bgIndex].title}<Svg/>
-                </motion.h1>
+      {/* Left Positioned SVG */}
+      <div className="absolute cursor-pointer left-10 top-1/2 transform -translate-y-1/2">
+        <Herosvg />
+      </div>
 
-                <motion.p
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -50 }}
-                  transition={{
-                    duration: 1.5,
-                    ease: "easeOut",
-                    delay: 0.7,
-                  }}
-                  className="text-xl text-gray-300 mb-8 font-light"
-                >
-                  
-                  {texts[bgIndex].description}
-                </motion.p>
-
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="text-yellow-gold flex px-6 py-3 border-2 border-yellow-gold text-lg font-medium  transition duration-300 shadow-lg transform hover:scale-105"
-                >
-                  View Portfolio
-                  <ArrowRight className="ml-2" size={20} />
-                </motion.button>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </section>
-    </>
+      {/* Right Positioned SVG (rotated) */}
+      <div className="absolute cursor-pointer right-10 top-1/2 transform rotate-180 -translate-y-1/2">
+        <Herosvg />
+      </div>
+    </section>
   );
 };
 

@@ -110,17 +110,16 @@ const Hero = () => {
                 className="text-[15rem] gap-x-4 items-center flex md:text-7xl font-custom mb-6 relative"
                 style={{
                   fontFamily: "font1, sans-serif",
-                  fontSize: "25rem !important", // Increased font size
+                  fontSize: "25rem !important",
                 }}
               >
-                {/* Left positioned SVG (Edge of the screen) */}
                 <Svg />
                 {texts[bgIndex].title}
-                {/* Right positioned SVG (Edge of the screen) */}
+
                 <Svg />
               </motion.h1>
 
-              {/* Description with smoother animation */}
+              {/* Description  */}
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -135,7 +134,7 @@ const Hero = () => {
                 {texts[bgIndex].description}
               </motion.p>
 
-              {/* Button with enhanced animation */}
+              {/* Button*/}
               <motion.button
                 whileHover={{ scale: 1.1, backgroundColor: "#ffcc00" }}
                 whileTap={{ scale: 0.95 }}
@@ -156,13 +155,11 @@ const Hero = () => {
           </motion.div>
         </AnimatePresence>
       </div>
-      
-      {/* Left Positioned SVG */}
+
       <div className="absolute cursor-pointer left-10 top-1/2 transform -translate-y-1/2">
         <Herosvg />
       </div>
 
-      {/* Right Positioned SVG (rotated) */}
       <div className="absolute cursor-pointer right-10 top-1/2 transform rotate-180 -translate-y-1/2">
         <Herosvg />
       </div>

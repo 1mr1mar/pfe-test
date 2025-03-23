@@ -7,7 +7,6 @@ import "slick-carousel/slick/slick-theme.css";
 const MenuItem = ({ name, description, price }) => {
   return (
     <div className="flex flex-col items-start px-4 py-6  ">
-      {/* اسم الطبق */}
       <div className="flex justify-between w-full">
         <h3 className="text-lg font-semibold text-yellow-gold uppercase tracking-wide">
           {name}
@@ -15,10 +14,8 @@ const MenuItem = ({ name, description, price }) => {
         <p className="text-lg font-bold text-yellow-gold">${price}</p>
       </div>
 
-      {/* الخط الفاصل */}
       <div className="border-t-2 border-yellow-gold w-full my-2"></div>
 
-      {/* وصف الطبق */}
       <p className="text-white text-sm">{description}</p>
     </div>
   );

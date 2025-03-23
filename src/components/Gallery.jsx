@@ -41,7 +41,7 @@ const Gallery = () => {
   };
 
   useEffect(() => {
-    const interval = setInterval(changeIndex, 4000); // تغيير الصور كل 4 ثواني
+    const interval = setInterval(changeIndex, 4000); 
     return () => clearInterval(interval);
   }, []);
 
@@ -56,7 +56,7 @@ const Gallery = () => {
     initialSlide: activeIndex,
   };
 
-  // كشف إذا كان القسم في العرض
+ 
   const [isInView, setIsInView] = useState(false);
 
   const onVisibilityChange = (entries) => {
@@ -66,7 +66,7 @@ const Gallery = () => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(onVisibilityChange, {
-      threshold: 0.5, // تفعيل الأنيميشن عند ظهور 50% من القسم
+      threshold: 0.5, 
     });
 
     const section = document.querySelector("#gallery-section");
@@ -100,7 +100,7 @@ const Gallery = () => {
               key={product.id}
               className="flex w-full items-center justify-between gap-12 py-6 card"
             >
-              {/* صورة المنتج */}
+           
               <motion.div
                 className="w-150 h-150 flex-1/2 justify-center items-center md:w-1/3"
                 initial={{ opacity: 0, y: 50 }}
@@ -114,7 +114,7 @@ const Gallery = () => {
                 />
               </motion.div>
 
-              {/* وصف المنتج */}
+              
               <motion.div
                 className="w-full flex-1/2 md:w-2/3 text-center md:text-left"
                 initial={{ opacity: 0, x: -50 }}

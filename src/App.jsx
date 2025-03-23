@@ -8,6 +8,7 @@ import Gallery from './components/Gallery';
 import Menu from './components/Menu';
 import OurChef from './components/OurChef';
 import ContactUs from './components/ContactUs';
+import Booking from './components/Booking';
 import './App.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -30,6 +31,7 @@ const App = () => {
       <Gallery/>
       <Menu/>
       <OurChef/>
+      <Booking/>
       <ContactUs/>
       <Footer />
     </div>

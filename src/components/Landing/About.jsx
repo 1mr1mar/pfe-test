@@ -2,7 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import SvgIcon from "./costumsvg";
-import "../App.css";
+import Svg from "./svgn2";
+import "../../App.css";
 
 const About = () => {
   const { ref, inView } = useInView({
@@ -39,7 +40,9 @@ const About = () => {
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
       >
+        <Svg/>
         About Us
+        <Svg/>
       </motion.h1>
 
       {/* Description */}

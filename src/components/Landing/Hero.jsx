@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Navbar from "./Navbar";
 import Svg from "./svgn2";
-import Herosvg from "../herosvg";
-import "../App.css";
+import Herosvg from "../../herosvg";
+import "../../App.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 

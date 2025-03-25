@@ -1,9 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import SvgIcon from "./costumsvg";
 import Svg from "./svgn2";
 import SvgI from "./svgn4";
-import "../App.css";
+import "../../App.css";
 
 const OurChef = () => {
   return (

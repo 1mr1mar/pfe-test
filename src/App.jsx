@@ -4,17 +4,21 @@ import './App.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import MainMenu from './components/MainMenu';
+import Book from './bookingPage';
 
 
-const App = () => {
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+
+function App() {
   return (
-    <div className=" relative min-h-screen">
-      <div className="fixed z-50 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
-      <div className="fixed z-50 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
-      <MainMenu/>
-     {/* <Landing/>*/}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/menu" element={<MainMenu />} />
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;

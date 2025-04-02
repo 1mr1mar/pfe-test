@@ -3,6 +3,8 @@ import SvgIcon3 from "./svgn3";
 import Svg from "./svgn2";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from "react-router-dom";
+import MainMenu from "../MainMenu";
 
 const MenuItem = ({ name, description, price }) => {
   return (
@@ -105,9 +107,11 @@ const Menu = () => {
         </div>
 
         <div className="text-center mt-12">
-          <button className="text-yellow-gold mt-10 mb-20 px-6 py-3 border-2 border-yellow-gold text-lg font-medium  transition duration-300 shadow-lg transform hover:scale-105">
-            View All
-          </button>
+          <Link to="/menu ">
+            <button className="text-yellow-gold mt-10 mb-20 px-6 py-3 border-2 border-yellow-gold text-lg font-medium transition duration-300 shadow-lg transform hover:scale-105">
+              View All
+            </button>
+          </Link>
         </div>
       </div>
       <div className="absolute right-0 bottom-0 ">

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion"; // Import motion for animations
+import { motion } from "framer-motion"; 
 import Navbar from "./Landing/Navbar";
 import Footer from "./Landing/Footer";
 import "../index.css";
 import "../App.css";
 import Svg from "./Landing/svgn2";
-import { productsData } from "./data/products"; // Make sure your data is correct
+import { productsData } from "./data/products"; 
+import { Link } from "react-router-dom";
 
 const MainMenu = () => {
   // State for filters

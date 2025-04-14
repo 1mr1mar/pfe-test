@@ -33,20 +33,20 @@ const ContactUs = () => {
             <input
               type="text"
               placeholder="Name"
-              className="w-full border-2 border-yellow-gold1 p-3 mb-4 bg-transparent text-white rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-gold1"
+              className="w-full border-2 border-yellow-gold p-3 mb-4 bg-transparent text-white  focus:outline-none focus:ring-2 focus:ring-yellow-gold"
             />
             <input
               type="email"
               placeholder="Email"
-              className="w-full p-3 mb-4 border-2 border-yellow-gold1 bg-transparent text-white rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-gold1"
+              className="w-full p-3 mb-4 border-2 border-yellow-gold bg-transparent text-white  focus:outline-none focus:ring-2 focus:ring-yellow-gold"
             />
             <textarea
               placeholder="Message"
-              className="w-full p-3 mb-4 border-2 border-yellow-gold1 bg-transparent text-white rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-gold1"
+              className="w-full p-3 mb-4 border-2 border-yellow-gold bg-transparent text-white  focus:outline-none focus:ring-2 focus:ring-yellow-gold"
             ></textarea>
             <button
               type="submit"
-              className="p-3 w-full md:w-auto  px-6 border-2 border-yellow-gold1 pl-10 pr-10 ml-70 text-yellow-gold rounded-md hover:bg-yellow-gold1 hover:text-white transition-all"
+              className="p-3 w-full md:w-auto  px-6 border-2 border-yellow-gold pl-10 pr-10 ml-70 text-yellow-gold  hover:bg-yellow-gold hover:text-white transition-all"
             >
               Send
             </button>

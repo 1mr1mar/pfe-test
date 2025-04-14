@@ -37,7 +37,9 @@ const Landing = () => {
 
 export default Landing;*/
 // Landing.js
-import React from "react";
+
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Hero from "./Landing/Hero";
 import About from "./Landing/About";
 import Gallery from "./Landing/Gallery";
@@ -46,60 +48,63 @@ import OurChef from "./Landing/OurChef";
 import Booking from "./Landing/Booking";
 import ContactUs from "./Landing/ContactUs";
 import Footer from "./Landing/Footer";
-import { Link } from "react-scroll";  // استيراد Link من react-scroll
+import Svg from "../herosvg";
+
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../app.css";
-import Svg from "../herosvg"; 
 
 const Landing = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const hash = location.hash;
+    if (hash) {
+      const id = hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  }, [location]);
+
   return (
     <div className="relative min-h-screen">
-       <div className="fixed z-50 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
-       <div className="fixed z-50 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
-      <div className="z-100" id="home">
-        <Hero />
-      </div>
-      <div className="z-100" id="about">
-        <About />
-      </div>
-      <div className="z-100" id="gallery">
-        <Gallery />
-      </div>
-      <div className="z-100" id="menu">
-        <Menu />
-      </div>
-      <div className="z-100" id="chef">
-        <OurChef />
-      </div>
-      <div className="z-100" id="booking">
-        <Booking />
-      </div>
-      <div className="z-100" id="contact">
-        <ContactUs />
-      </div>
+      <div className="fixed z-50 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
+      <div className="fixed z-50 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
+
+      <div className="z-100" id="home"><Hero /></div>
+      <div className="z-100" id="about"><About /></div>
+      <div className="z-100" id="gallery"><Gallery /></div>
+      <div className="z-100" id="menu"><Menu /></div>
+      <div className="z-100" id="chef"><OurChef /></div>
+      <div className="z-100" id="booking"><Booking /></div>
+      <div className="z-100" id="contact"><ContactUs /></div>
+
       <Footer />
 
-      {/* زر العودة إلى الأعلى */}
+      {/* زر العودة للأعلى */}
       <div className="fixed z-999 bottom-5 right-5">
-        <Link
-          to="home" // معرّف قسم Hero
-          smooth={true}
-          duration={500}
+        <button
+          onClick={() => {
+            const el = document.getElementById("home");
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="text-black rounded-full shadow-lg hover:bg-yellow-gold1 p-3 transition duration-300"
         >
-          <button className=" text-black rounded-full shadow-lg hover:bg-yellow-gold1 p-3 transition duration-300">
-            <div className="transform rotate-90 ">
-               <Svg /> {/* استخدام مكون Svg هنا */}
-            </div>
-           
-          </button>
-        </Link>
+          <div className="transform rotate-90">
+            <Svg />
+          </div>
+        </button>
       </div>
     </div>
   );
 };
 
 export default Landing;
+
 
 
 

@@ -169,12 +169,27 @@ export default Navbar;*/
 
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleNavClick = (sectionId) => {
+    if (location.pathname !== "/") {
+      navigate(`/#${sectionId}`);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+    setIsMenuOpen(false); // Close the mobile menu after clicking
   };
 
   return (
@@ -182,57 +197,24 @@ function Navbar() {
       <div className="container mx-auto flex items-center w-full justify-center relative">
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center text-lg space-x-6 xl:space-x-10">
-          <a
-            href="#home"
-            className="relative group text-lg text-white hover:text-white hover:scale-120 transition duration-300"
-          >
-            HOME
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-800 origin-left"></span>
-            <span className="absolute bottom-1 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-          </a>
-          <a
-            href="#about"
-            className="relative group hover:text-white hover:scale-120 transition duration-300"
-          >
-            About
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-800 origin-left"></span>
-            <span className="absolute bottom-1 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-          </a>
-          <a
-            href="#gallery"
-            className="relative group hover:text-white hover:scale-120 transition duration-300"
-          >
-            Gallery
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-800 origin-left"></span>
-            <span className="absolute bottom-1 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-          </a>
-          <a
-            href="#menu"
-            className="relative group hover:text-white hover:scale-120 transition duration-300"
-          >
-            Menu
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-800 origin-left"></span>
-            <span className="absolute bottom-1 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-          </a>
-          <a
-            href="#chef"
-            className="relative group hover:text-white hover:scale-120 transition duration-300"
-          >
-            Our Chef
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-800 origin-left"></span>
-            <span className="absolute bottom-1 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-          </a>
-          <a
-            href="#contact"
-            className="relative group hover:text-white hover:scale-120 transition duration-300"
-          >
-            Contact Us
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-800 origin-left"></span>
-            <span className="absolute bottom-1 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
-          </a>
+          {["home", "about", "gallery", "menu", "chef", "contact"].map((section) => (
+            <button
+              key={section}
+              onClick={() => handleNavClick(section)}
+              className="relative group text-lg text-white hover:text-white hover:scale-120 transition duration-300"
+            >
+              {section === "home" ? "HOME" :
+               section === "chef" ? "Our Chef" :
+               section === "contact" ? "Contact Us" :
+               section.charAt(0).toUpperCase() + section.slice(1)}
+
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-800 origin-left"></span>
+              <span className="absolute bottom-1 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+            </button>
+          ))}
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Toggle */}
         <div className="lg:hidden absolute right-4">
           <button
             onClick={toggleMenu}
@@ -246,24 +228,18 @@ function Navbar() {
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
         <div className="lg:hidden bg-transparent bg-opacity-90 shadow-lg mt-4 p-4 rounded-md flex flex-col items-center">
-          <a href="#home" className="block relative group text-lg hover:text-white transition duration-300 text-center">
-            HOME
-          </a>
-          <a href="#about" className="block relative group hover:text-white transition duration-300 text-center">
-            About
-          </a>
-          <a href="#gallery" className="block relative group hover:text-white transition duration-300 text-center">
-            Gallery
-          </a>
-          <a href="#menu" className="block relative group hover:text-white transition duration-300 text-center">
-            Menu
-          </a>
-          <a href="#chef" className="block relative group hover:text-white transition duration-300 text-center">
-            Our Chef
-          </a>
-          <a href="#contact" className="block relative group hover:text-white transition duration-300 text-center">
-            Contact Us
-          </a>
+          {["home", "about", "gallery", "menu", "chef", "contact"].map((section) => (
+            <button
+              key={section}
+              onClick={() => handleNavClick(section)}
+              className="block relative group text-lg hover:text-white transition duration-300 text-center"
+            >
+              {section === "home" ? "HOME" :
+               section === "chef" ? "Our Chef" :
+               section === "contact" ? "Contact Us" :
+               section.charAt(0).toUpperCase() + section.slice(1)}
+            </button>
+          ))}
           <div className="flex justify-center mt-4">
             <button className="bg-amber-300 text-black px-4 py-2 shadow-md hover:bg-amber-400 transition duration-300">
               BOOK NOW

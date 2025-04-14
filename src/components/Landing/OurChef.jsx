@@ -57,7 +57,7 @@ const OurChef = () => {
 
         {/* Image with animation */}
         <motion.img
-          src="/pic/menu6.jpg"
+          src="/pic/inner-pages-img-17.jpg"
           alt="Delicious Dish"
           className="w-full md:w-2/5 object-cover rounded-lg shadow-lg"
           initial={{ opacity: 0, x: 100 }}

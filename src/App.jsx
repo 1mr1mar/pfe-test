@@ -16,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/menu" element={<MainMenu />} />
+        <Route path="/book" element={<Book />} />
       </Routes>
     </Router>
   );

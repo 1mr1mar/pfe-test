@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Svg from "./svgn2";
+import { Link } from "react-router-dom";
 
 const Booking = () => {
   const [formData, setFormData] = useState({
@@ -52,6 +53,12 @@ const Booking = () => {
               <option value="2">2 People</option>
               <option value="3">3 People</option>
               <option value="4">4 People</option>
+              <option value="4">5 People</option>
+              <option value="4">6 People</option>
+              <option value="4">7 People</option>
+              <option value="4">8 People</option>
+              <option value="4">9 People</option>
+              <option value="4">10 People</option>
             </select>
           </div>
           <div className="col-span-1">
@@ -73,12 +80,14 @@ const Booking = () => {
             />
           </div>
           <div className="col-span-1">
+          <Link to="/book ">
             <button
               type="submit"
               className="p-6 border-2 border-yellow-gold1 text-yellow-gold bg-transparent hover:bg-yellow-gold1 hover:text-black w-full text-lg"
             >
               BOOK NOW
             </button>
+          </Link>
           </div>
         </form>
       </motion.div>

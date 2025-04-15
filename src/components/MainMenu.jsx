@@ -31,8 +31,8 @@ const MainMenu = () => {
   return (
     <div className="relative min-h-screen bg-green-ziti text-yellow-gold">
       {/* Fixed gold lines */}
-      <div className="fixed z-500 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
-      <div className="fixed z-500 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
+      <div className="fixed z-5001 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
+      <div className="fixed z-5001 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="absolute z-10 top-0 left-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1"></div>
       <div className="absolute z-10 top-0 left-[calc(8/20*100%)] h-full w-[1px] bg-yellow-gold1"></div>
       <div className="absolute z-10 top-0 right-[calc(8/20*100%)] h-full w-[1px] bg-yellow-gold1"></div>

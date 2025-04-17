@@ -1,11 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
-import "./App.css";
-import "./index.css";
-import Navbar from "./components/Landing/Navbar";
-import Footer from "./components/Landing/Footer";
-import ContactUs from "./components/Landing/ContactUs";
-import Herosvg from "./components/Landing/svgn2";
+import "../App.css";
+import "../index.css";
+import Navbar from "./Landing/Navbar";
+import Footer from "./Landing/Footer";
+import ContactUs from "./Landing/ContactUs";
+import Herosvg from "./Landing/svgn2";
 
 const Book = () => {
   return (

@@ -53,6 +53,7 @@ const OurChef = () => {
             restaurant, where we blend tradition with innovation to create
             unforgettable dining experiences.
           </motion.p>
+          
         </div>
 
         {/* Image with animation */}
@@ -65,6 +66,20 @@ const OurChef = () => {
           transition={{ duration: 1 }}
         />
       </div>
+      <motion.div
+            className="mt-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.5, delay: 0.3 }}
+          >
+            <a
+              href="/chefs"
+              className="px-6 py-3 block bg-yellow-gold1 text-green-khzy font-bold  shadow-md hover:bg-yellow-gold transition duration-300"
+              style={{ fontFamily: "font1, sans-serif" }}
+            >
+              View Our Chefs
+            </a>
+          </motion.div>
 
       {/* Position SvgI all the way left */}
       <motion.div

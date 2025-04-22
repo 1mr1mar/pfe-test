@@ -197,7 +197,7 @@ function Navbar() {
       <div className="container mx-auto flex items-center w-full justify-center relative">
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center text-lg space-x-6 xl:space-x-10">
-          {["home", "about", "gallery", "menu", "chef", "contact"].map((section) => (
+          {["home", "about", "gallery", "menu", "chef","booking","reviews", "contact"].map((section) => (
             <button
               key={section}
               onClick={() => handleNavClick(section)}

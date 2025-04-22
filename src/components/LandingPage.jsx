@@ -49,6 +49,7 @@ import Booking from "./Landing/Booking";
 import ContactUs from "./Landing/ContactUs";
 import Footer from "./Landing/Footer";
 import Svg from "../herosvg";
+import Reviews from "./Landing/ReviewsSection";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -81,6 +82,7 @@ const Landing = () => {
       <div className="z-100" id="menu"><Menu /></div>
       <div className="z-100" id="chef"><OurChef /></div>
       <div className="z-100" id="booking"><Booking /></div>
+      <div className="z-100" id="reviews"><Reviews /></div>
       <div className="z-100" id="contact"><ContactUs /></div>
 
       <Footer />

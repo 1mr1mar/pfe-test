@@ -74,8 +74,8 @@ const OurChef = () => {
           >
             <a
               href="/chefs"
-              className="px-6 py-3 block bg-yellow-gold1 text-green-khzy font-bold  shadow-md hover:bg-yellow-gold transition duration-300"
-              style={{ fontFamily: "font1, sans-serif" }}
+              className="px-6 py-3 block bg-green-khzy text-yellow-gold border-1 border-yellow-gold  font-bold  shadow-md hover:text-green-ziti hover:bg-yellow-gold1 transition duration-300"
+              
             >
               View Our Chefs
             </a>

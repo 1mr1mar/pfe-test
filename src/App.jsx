@@ -8,6 +8,8 @@ import Book from './components/bookingPage';
 import Chefs from './components/chefs';
 import AddReviewForm from './components/AddReviewForm';
 import ReviewsPage from './components/ReviewsPage';
+import MealDetails from './components/MealDetails';
+import CartPage from './components/CartPage';
 
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -23,6 +25,8 @@ function App() {
         <Route path="/chefs" element={<Chefs />} />
         <Route path="/add-review" element={<AddReviewForm />} />
         <Route path="/reviews" element={<ReviewsPage />} />
+        <Route path="/product/:id" element={<MealDetails />} />
+        <Route path="/cart" element={<CartPage />} />
         {/* Add more routes as needed */}
       </Routes>
     </Router>

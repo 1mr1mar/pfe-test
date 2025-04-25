@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { productsData } from "./data/products"; // استيراد البيانات
+import { productsData } from "./data/products";
 import Navbar from "./Landing/Navbar";
 import Footer from "./Landing/Footer";
-import { motion } from "framer-motion"; // استيراد مكتبة الأنيميشن
+import { motion } from "framer-motion"; 
 
 const MealDetails = () => {
-  const { id } = useParams(); // الحصول على معرّف المنتج من الـ URL
+  const { id } = useParams(); 
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1); // حالة الكمية
-  const [note, setNote] = useState(""); // حالة الملاحظة
-  const [cart, setCart] = useState([]); // حالة السلة
+  const [quantity, setQuantity] = useState(1); 
+  const [note, setNote] = useState(""); 
+  const [cart, setCart] = useState([]); 
 
   useEffect(() => {
     const foundProduct = productsData.find((item) => item.id === parseInt(id));
@@ -18,13 +18,13 @@ const MealDetails = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    // إضافة المنتج إلى السلة
+    
     const newProduct = { ...product, quantity, note };
     setCart([...cart, newProduct]);
     alert(`${product.name} has been added to your cart!`);
   };
 
-  if (!product) return <div>Loading...</div>; // في حالة عدم العثور على المنتج
+  if (!product) return <div>Loading...</div>; 
 
   return (
     <div className="bg-green-ziti pt-45  text-yellow-gold min-h-screen">
@@ -43,7 +43,7 @@ const MealDetails = () => {
           {product.name}
         </motion.h1>
         <div className="flex items-center space-x-8">
-          {/* إضافة تأثيرات عند التمرير على الصورة */}
+          
           <motion.img
             src={product.image}
             alt={product.name}
@@ -51,11 +51,11 @@ const MealDetails = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5 }}
-            whileHover={{ scale: 1.05 }} // تأثير عند التمرير
+            whileHover={{ scale: 1.05 }}
           />
 
           <div className="w-1/2">
-            {/* تأثيرات عند التمرير على النص */}
+            
 
             <motion.p
               className="text-xl text-yellow-gold my-4"
@@ -80,7 +80,7 @@ const MealDetails = () => {
               <span>{product.popularity}</span>
             </div>
 
-            {/* نموذج تخصيص الوجبة */}
+            
             <div className="my-6">
               <h2 className="text-2xl font-semibold mb-4">
                 Customize your meal
@@ -99,7 +99,7 @@ const MealDetails = () => {
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
                 className="border-1 border-yellow-gold1 p-2 w-20"
-                whileFocus={{ scale: 1.05 }} // تأثير على الحقل عند التفاعل
+                whileFocus={{ scale: 1.05 }} 
               />
 
               <div className="my-4">
@@ -116,16 +116,16 @@ const MealDetails = () => {
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Any special requests?"
                   className="border-1 border-yellow-gold1 p-2 w-full h-24"
-                  whileFocus={{ scale: 1.05 }} // تأثير على الحقل عند التفاعل
+                  whileFocus={{ scale: 1.05 }} 
                 />
               </div>
             </div>
 
-            {/* زر "إضافة إلى السلة" مع تأثيرات */}
+            
             <motion.button
               onClick={handleAddToCart}
               className="bg-yellow-gold text-green-ziti p-4 rounded-lg mt-4 hover:bg-yellow-gold1 transition-colors duration-300"
-              whileHover={{ scale: 1.1 }} // تأثير التكبير عند التمرير
+              whileHover={{ scale: 1.1 }} 
             >
               Add to Cart
             </motion.button>

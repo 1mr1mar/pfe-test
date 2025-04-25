@@ -87,7 +87,7 @@ const Landing = () => {
 
       <Footer />
 
-      {/* زر العودة للأعلى */}
+      
       <div className="fixed z-999 bottom-5 right-5">
         <button
           onClick={() => {

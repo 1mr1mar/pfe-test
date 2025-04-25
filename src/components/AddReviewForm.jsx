@@ -25,7 +25,7 @@ export default function AddReviewForm({ onSubmit }) {
 
  
   const handleStarClick = (index) => {
-    setRating(index + 1); // التقييم يتم تحديده بناءً على النجمة التي تم النقر عليها
+    setRating(index + 1);
   };
 
   return (

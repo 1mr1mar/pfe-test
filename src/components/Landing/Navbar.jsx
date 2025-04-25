@@ -189,7 +189,7 @@ function Navbar() {
         element.scrollIntoView({ behavior: "smooth" });
       }
     }
-    setIsMenuOpen(false); // Close the mobile menu after clicking
+    setIsMenuOpen(false); 
   };
 
   return (

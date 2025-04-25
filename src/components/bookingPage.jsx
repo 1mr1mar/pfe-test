@@ -10,7 +10,7 @@ import Herosvg from "./Landing/svgn2";
 const Book = () => {
   return (
     <section className="relative min-h-screen bg-green-ziti">
-      {/* Vertical Gold Lines */}
+     
       <div className="fixed z-500 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="fixed z-500 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="absolute z-[-1] top-0 left-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1"></div>
@@ -20,7 +20,7 @@ const Book = () => {
 
       <Navbar />
 
-      {/* Hero Section with Background Image */}
+      
       <motion.div
         style={{
           backgroundImage: `url(/pic/pic1-homme.jpg)`,
@@ -54,7 +54,7 @@ const Book = () => {
       {/* Booking Form */}
       <div className="w-full   mx-auto p-8 bg-green-ziti bg-opacity-80 rounded-lg shadow-lg mt-12">
         <form className="flex flex-col md:flex-row gap-12">
-          {/* Customer Info on the Right */}
+         
           <motion.div
             className="w-full ml-50 md:w-1/2 flex flex-col gap-6"
             initial={{ opacity: 0, x: 50 }}
@@ -110,7 +110,7 @@ const Book = () => {
             </div>
           </motion.div>
 
-          {/* Booking Info on the Left */}
+          
           <motion.div
             className="w-full mr-50 md:w-1/2 flex flex-col gap-6"
             initial={{ opacity: 0, x: -50 }}

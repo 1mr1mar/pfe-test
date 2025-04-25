@@ -5,9 +5,9 @@ import Footer from "./Landing/Footer";
 import { motion } from "framer-motion";
 
 const CartPage = () => {
-  const [cart, setCart] = useState([]); // حالة السلة
-  const [total, setTotal] = useState(0); // حالة المجموع الكلي
-  const [paymentMethod, setPaymentMethod] = useState(""); // حالة طريقة الدفع
+  const [cart, setCart] = useState([]); 
+  const [total, setTotal] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState(""); 
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -22,7 +22,7 @@ const CartPage = () => {
   const handleRemoveItem = (id) => {
     const updatedCart = cart.filter(item => item.id !== id);
     setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); // تحديث السلة في الـ LocalStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart)); 
   };
 
   const handleQuantityChange = (id, newQuantity) => {
@@ -30,12 +30,12 @@ const CartPage = () => {
       item.id === id ? { ...item, quantity: newQuantity } : item
     );
     setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); // تحديث السلة في الـ LocalStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart)); 
   };
 
   const handlePaymentSubmit = () => {
     alert(`You have chosen ${paymentMethod} as your payment method. Proceeding with payment...`);
-    // هنا يمكن إضافة الوظائف المتعلقة بالدفع الفعلي (مثلاً عبر API أو صفحة الدفع)
+    
   };
 
   if (cart.length === 0) {

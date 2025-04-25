@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom"; // استيراد Outlet
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
   FaUtensils,
   FaShoppingCart,
@@ -12,6 +12,13 @@ import {
 } from "react-icons/fa";
 
 const DashboardLayout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    navigate("/admin/login");
+  };
+
   return (
     <div className="flex min-h-screen font1 bg-green-khzy text-yellow-gold1">
       {/* Sidebar */}
@@ -32,13 +39,19 @@ const DashboardLayout = () => {
           <NavItem to="/admin/settings" icon={<FaCog />} label="Settings" />
         </nav>
         <div className="mt-6">
-          <NavItem to="/logout" icon={<FaSignOutAlt />} label="Logout" />
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-green-khzy hover:text-yellow-gold transition-all duration-200 w-full"
+          >
+            <span className="text-lg"><FaSignOutAlt /></span>
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
 
       {/* Main content */}
       <main className="flex-1 p-6 bg-green-khzy overflow-y-auto">
-        <Outlet /> {/* عرض الصفحة الفرعية هنا */}
+        <Outlet />
       </main>
     </div>
   );

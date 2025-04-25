@@ -34,7 +34,7 @@ const ReviewsPage = () => {
 
   return (
     <section className=" m-0 bg-green-ziti  text-yellow-gold relative ">
-      <Navbar /> {/* إضافة Navbar هنا */}
+      <Navbar /> 
 
       {/* Hero Section with Background Image */}
       <motion.div
@@ -66,7 +66,7 @@ const ReviewsPage = () => {
         </motion.h1>
       </motion.div>
 
-      {/* خطوط زخرفية */}
+    
       <div className="fixed z-5000 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="fixed z-5000 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="absolute z-[-1] top-0 left-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1"></div>
@@ -74,7 +74,6 @@ const ReviewsPage = () => {
       <div className="absolute z-[-1] top-0 right-[calc(8/20*100%)] h-full w-[1px] bg-yellow-gold1"></div>
       <div className="absolute z-[-1] top-0 right-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1"></div>
 
-      {/* التقييمات */}
       <div className="mt-12 z-20">
         <motion.h2
           className="text-5xl mt-10 md:text-6xl text-center mb-12"
@@ -86,7 +85,7 @@ const ReviewsPage = () => {
           Customer Reviews
         </motion.h2>
 
-        {/* فلتر الترتيب */}
+     
         <div className="flex justify-center mb-8">
           <select
             onChange={(e) => sortReviews(e.target.value)}
@@ -98,7 +97,7 @@ const ReviewsPage = () => {
           </select>
         </div>
 
-        {/* التقييمات */}
+    
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {reviews.map((rev) => (
             <motion.div
@@ -117,7 +116,7 @@ const ReviewsPage = () => {
           ))}
         </div>
 
-        {/* نموذج الإضافة */}
+        
         <div className="mt-16 max-w-2xl mx-auto">
           <AddReviewForm onSubmit={handleNewReview} />
         </div>

@@ -21,7 +21,7 @@ const About = () => {
       <div className="absolute z-10 top-0 right-[calc(8/20*100%)] h-full w-[1px] bg-yellow-gold1"></div>
       <div className="absolute z-10 top-0 right-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1"></div>
 
-      {/* contint */}
+      
       {/* Our Story */}
       <motion.p
         className="jdid text-lg uppercase z-20 text-yellow-gold tracking-wide"

@@ -4,7 +4,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 const ChefsPage = () => {
   const [chefs, setChefs] = useState([
     {
-      name: "Chef Ahmed Khaled",
+      name: "Chef Taha Oumane",
       title: "Executive Chef",
       image: "/pic/inner-pages-img-16.jpg",
       bio: "An expert in French cuisine with over 15 years of experience in crafting fine dining dishes.",

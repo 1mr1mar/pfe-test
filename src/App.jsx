@@ -20,6 +20,7 @@ import DashboardHome from "./components/admin/DashboardHome";
 import ChefsPage from "./components/admin/ChefsPage";
 import AdminMenu from "./components/admin/AdminMenu";
 import AdminOrders from "./components/admin/AdminOrders";
+import Bookings from "./components/admin/Bookings";
 import Login from "./components/Login";
 
 function App() {
@@ -54,10 +55,11 @@ function App() {
           <Route path="chefs" element={<ChefsPage />} />
           <Route path="menu" element={<AdminMenu />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="bookings" element={<Bookings />} />
         </Route>
       </Routes>
     </Router>
-  );
+  );  
 }
 
 export default App;

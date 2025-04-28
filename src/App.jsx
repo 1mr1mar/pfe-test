@@ -22,6 +22,9 @@ import AdminMenu from "./components/admin/AdminMenu";
 import AdminOrders from "./components/admin/AdminOrders";
 import Bookings from "./components/admin/Bookings";
 import Login from "./components/Login";
+import ReviewssPage from "./components/admin/ReviewsPage";
+import Sittings from "./components/admin/Sittings";
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -56,6 +59,8 @@ function App() {
           <Route path="menu" element={<AdminMenu />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="bookings" element={<Bookings />} />
+          <Route path="reviews" element={<ReviewssPage />} />
+          <Route path="sittings" element={<Sittings />} />
         </Route>
       </Routes>
     </Router>

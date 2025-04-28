@@ -187,7 +187,8 @@ const AdminMenu = () => {
 
   // Form component to reduce duplication
   const ProductForm = ({ product, isEdit, onChange, onFileChange }) => (
-    <>
+    <div className="max-w-md mx-auto p-6 bg-green-ziti rounded-lg shadow-lg">
+      {" "}
       <div className="mb-2">
         <input
           type="text"
@@ -204,7 +205,6 @@ const AdminMenu = () => {
           </p>
         )}
       </div>
-
       <div className="mb-2">
         <select
           value={product.category}
@@ -228,7 +228,6 @@ const AdminMenu = () => {
           </p>
         )}
       </div>
-
       <div className="mb-2">
         <input
           type="number"
@@ -247,7 +246,6 @@ const AdminMenu = () => {
           </p>
         )}
       </div>
-
       <div className="mb-2">
         <textarea
           placeholder="Description"
@@ -263,7 +261,6 @@ const AdminMenu = () => {
           </p>
         )}
       </div>
-
       <div className="mb-2">
         <label className="block text-yellow-gold mb-1">Product Image</label>
         <input
@@ -273,7 +270,7 @@ const AdminMenu = () => {
           accept="image/jpeg, image/png, image/gif"
         />
       </div>
-    </>
+    </div>
   );
 
   return (
@@ -395,11 +392,11 @@ const AdminMenu = () => {
             <div
               key={product.id}
               className={`h-full flex flex-col justify-between bg-green-ziti border border-yellow-gold1 p-4 rounded-lg shadow-lg transition-all duration-500 transform hover:shadow-2xl 
-                hover:scale-[1.02] ${
-          animateDelete === product.id
-            ? "scale-0 opacity-0 rotate-12"
-            : "scale-100 opacity-100 rotate-0 hover:scale-[1.02]"
-        }`}
+              hover:scale-[1.02] ${
+                animateDelete === product.id
+                  ? "scale-0 opacity-0 rotate-12"
+                  : "scale-100 opacity-100 rotate-0 hover:scale-[1.02]"
+              }`}
             >
               {editProductId === product.id ? (
                 <>
@@ -459,7 +456,7 @@ const AdminMenu = () => {
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-48 object-cover transition-transform duration-700 hover:scale-110"
+                        className="w-full h-100 object-cover transition-transform duration-700 hover:scale-110"
                       />
                     </div>
                   )}

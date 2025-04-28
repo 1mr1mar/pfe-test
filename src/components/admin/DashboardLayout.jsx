@@ -36,7 +36,7 @@ const DashboardLayout = () => {
           <NavItem to="/admin/bookings" icon={<FaUsers />} label="Bookings" />
           <NavItem to="/admin/chefs" icon={<FaUsers />} label="Chefs" />
           <NavItem to="/admin/reviews" icon={<FaStar />} label="Reviews" />
-          <NavItem to="/admin/settings" icon={<FaCog />} label="Settings" />
+          <NavItem to="/admin/sittings" icon={<FaCog />} label="Settings" />
         </nav>
         <div className="mt-6">
           <button

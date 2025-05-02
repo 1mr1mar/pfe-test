@@ -1,40 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { productsData } from "./data/products";
+import axios from "axios";  // Import axios for API requests
 import Navbar from "./Landing/Navbar";
 import Footer from "./Landing/Footer";
 import { motion } from "framer-motion"; 
 
 const MealDetails = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1); 
-  const [note, setNote] = useState(""); 
-  const [cart, setCart] = useState([]); 
+  const [quantity, setQuantity] = useState(1);
+  const [note, setNote] = useState("");
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    const foundProduct = productsData.find((item) => item.id === parseInt(id));
-    setProduct(foundProduct);
+    // Fetch meal data from API
+    axios
+      .get(`http://localhost:5000/api/meals/${id}`)
+      .then((response) => {
+        setProduct(response.data); // Set the fetched product data
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the meal data!", error);
+      });
   }, [id]);
 
   const handleAddToCart = () => {
-    
     const newProduct = { ...product, quantity, note };
     setCart([...cart, newProduct]);
     alert(`${product.name} has been added to your cart!`);
   };
 
-  if (!product) return <div>Loading...</div>; 
+  if (!product) return <div>Loading...</div>;
 
   return (
-    <div className="bg-green-ziti pt-45  text-yellow-gold min-h-screen">
+    <div className="bg-green-ziti pt-45 text-yellow-gold min-h-screen">
       <div className="fixed z-5001 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="fixed z-5001 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
 
       <Navbar />
       <div className="container pb-50 items-center mx-auto px-4 py-8">
         <motion.h1
-          className="text-4xl text-center items-center  mb-4"
+          className="text-4xl text-center items-center mb-4"
           style={{ fontFamily: "font1, sans-serif" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -43,9 +49,8 @@ const MealDetails = () => {
           {product.name}
         </motion.h1>
         <div className="flex items-center space-x-8">
-          
           <motion.img
-            src={product.image}
+           src={`/pic/${product.pic}`}  // Update image path
             alt={product.name}
             className="w-1/2 h-auto object-cover"
             initial={{ opacity: 0 }}
@@ -55,8 +60,6 @@ const MealDetails = () => {
           />
 
           <div className="w-1/2">
-            
-
             <motion.p
               className="text-xl text-yellow-gold my-4"
               initial={{ opacity: 0 }}
@@ -73,14 +76,13 @@ const MealDetails = () => {
             </div>
             <div className="flex items-center space-x-4 my-4">
               <span className="font-semibold">Category:</span>
-              <span>{product.category}</span>
+              <span>{product.categories}</span>
             </div>
             <div className="flex items-center space-x-4 my-4">
               <span className="font-semibold">Popularity:</span>
               <span>{product.popularity}</span>
             </div>
 
-            
             <div className="my-6">
               <h2 className="text-2xl font-semibold mb-4">
                 Customize your meal
@@ -121,7 +123,6 @@ const MealDetails = () => {
               </div>
             </div>
 
-            
             <motion.button
               onClick={handleAddToCart}
               className="bg-yellow-gold text-green-ziti p-4 rounded-lg mt-4 hover:bg-yellow-gold1 transition-colors duration-300"

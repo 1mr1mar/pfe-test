@@ -16,34 +16,44 @@ const MainMenu = () => {
   const [sortOption, setSortOption] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
   const [productsData, setProductsData] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
   const productsPerPage = 6;
 
-  // Fetch products from the backend
+  // Fetch products from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/meals");
         setProductsData(response.data);
+
+        // Extract all unique categories
+        const categoriesSet = new Set();
+        response.data.forEach((product) => {
+          if (product.categories) {
+            const productCategories = product.categories.split(",");
+            productCategories.forEach((cat) => categoriesSet.add(cat.trim()));
+          }
+        });
+
+        // Add 'All' as a category option at the beginning of the list
+        setAllCategories(["All", ...Array.from(categoriesSet)]);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
-
     fetchProducts();
   }, []);
 
+  // Filtering logic
   const filteredProducts = productsData.filter((product) => {
-    const matchesCategory =
-      categoryFilter === "All" || product.category === categoryFilter;
+    const productCategories = product.categories?.split(",").map((cat) => cat.trim()) || [];
+    const matchesCategory = categoryFilter === "All" || productCategories.includes(categoryFilter);
     const matchesPrice = product.price <= priceFilter;
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    return (
-      matchesCategory && matchesPrice && matchesSearch
-    );
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesPrice && matchesSearch;
   });
 
+  // Sorting logic
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortOption) {
       case "price":
@@ -57,13 +67,11 @@ const MainMenu = () => {
     }
   });
 
+  // Pagination logic
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = sortedProducts.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -80,6 +88,7 @@ const MainMenu = () => {
         </Link>
       </div>
 
+      {/* Grid lines */}
       <div className="fixed z-5001 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="fixed z-5001 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="absolute z-10 top-0 left-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1"></div>
@@ -105,6 +114,7 @@ const MainMenu = () => {
         </motion.h1>
 
         <div className="flex w-full">
+          {/* Left Section - Products */}
           <div className="w-2/3 p-6">
             <div className="flex justify-between">
               <p>
@@ -132,7 +142,7 @@ const MainMenu = () => {
                 >
                   <Link to={`/product/${product.id}`}>
                     <img
-                      src={`/pic/${product.pic}`} // Adjusted the image field to 'pic'
+                      src={`/pic/${product.pic}`}
                       alt={product.name}
                       className="w-[466px] h-[466px] object-cover mb-4 hover:scale-105 transition-transform duration-300"
                     />
@@ -143,6 +153,7 @@ const MainMenu = () => {
               ))}
             </div>
 
+            {/* Pagination */}
             <div className="mt-8 flex justify-center space-x-4">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -174,7 +185,9 @@ const MainMenu = () => {
             </div>
           </div>
 
+          {/* Right Section - Filters */}
           <div className="w-1/3 p-6">
+            {/* Price Filter */}
             <div className="mb-8 w-full">
               <label className="block jdid text-2xl text-yellow-gold mb-2">
                 Price
@@ -193,70 +206,40 @@ const MainMenu = () => {
               </div>
             </div>
 
-            <h2 className="jdid text-2xl">Categories</h2>
-            <div className="flex space-x-6 mt-5 mb-8">
-              <ul className="text-white cursor-pointer space-y-4">
-                {["All", "Pizza", "Pasta", "Salad"].map((cat) => (
-                  <li
-                    key={cat}
-                    onClick={() => setCategoryFilter(cat)}
-                    className={`relative group text-sm uppercase tracking-widest transition-colors duration-300 ${
-                      categoryFilter === cat
-                        ? "text-yellow-gold1 font-bold"
-                        : "hover:text-yellow-gold"
-                    }`}
-                  >
-                    {cat}
-                    <span className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-800 origin-left"></span>
-                  </li>
+            {/* Category Filter (Select) */}
+            <div className="mb-8 w-full">
+              <label className="block text-2xl text-yellow-gold mb-2">
+                Category
+              </label>
+              <select
+                className="bg-transparent text-yellow-gold border-1 border-yellow-gold1 p-2"
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+              >
+                {allCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
                 ))}
-              </ul>
+              </select>
             </div>
 
-            <div className="cursor-pointer space-y-3">
-              <h2 className="jdid text-2xl">Tags</h2>
-              <div className="text-white flex gap-1 flex-wrap">
-                {[
-                  "Breakfast",
-                  "Lunch",
-                  "Dinner",
-                  "Cocktails",
-                  "Wine",
-                  "Beer",
-                  "BBQ",
-                  "swiit",
-                  "diser",
-                ].map((tag) => (
-                  <p
-                    key={tag}
-                    className="hover:scale-110 hover:text-yellow-gold1"
-                  >
-                    {tag},
-                  </p>
-                ))}
-              </div>
+            {/* Search Filter */}
+            <div className="mb-8">
+              <label className="block text-2xl text-yellow-gold mb-2">
+                Search
+              </label>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="p-2 w-full text-yellow-gold bg-transparent border border-yellow-gold1"
+                placeholder="Search by name"
+              />
             </div>
-
-            <form
-              className="eltdf-searchform space-y-2 searchform mt-8 items-center"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <h2 className="screen-reader-text mb-5 jdid text-2xl">
-                Search for:
-              </h2>
-              <div className="input-holder flex items-center">
-                <input
-                  type="search"
-                  className="border-1 border-yellow-gold1 search-field text-yellow-gold w-full py-2 px-4"
-                  placeholder="Search"
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </form>
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );

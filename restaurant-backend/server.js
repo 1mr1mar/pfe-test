@@ -1,113 +1,151 @@
-const express = require('express');
-const mysql = require('mysql2/promise');  // استخدام mysql2/promise بدلاً من mysql2
-const dotenv = require('dotenv');
-const cors = require('cors');  // استيراد مكتبة CORS
-
-dotenv.config(); // لقراءة المتغيرات من ملف .env
+const express = require("express");
+const mysql = require("mysql");
+const cors = require("cors");
+const path = require("path");
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 
-// تفعيل CORS لجميع المسارات
 app.use(cors());
-
-// إعداد الاتصال بقاعدة البيانات باستخدام promise
-const promisePool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
-
-// اختبار الاتصال بقاعدة البيانات
-promisePool.query('SELECT 1')
-  .then(() => console.log('Database connected successfully'))
-  .catch((err) => console.error('Database connection error:', err));
-
-// إعداد الـ JSON parsing
 app.use(express.json());
+const categoriesRoutes = require("./routes/categories");
+app.use("/api/categories", categoriesRoutes);
 
-// نقطة النهاية الأساسية
-app.get('/', (req, res) => {
-  res.send('Hello, welcome to the restaurant backend!');
+// MySQL database connection
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "restaurant",
 });
 
-// استرجاع جميع الوجبات
-app.get('/api/meals', async (req, res) => {
-  try {
-    const [rows] = await promisePool.query('SELECT * FROM meals');
-    
-    // إضافة مسار كامل للصورة إذا كانت مخزنة في public/pic
-    const mealsWithFullImagePaths = rows.map(meal => {
-      if (meal.pic) {
-        meal.pic = `http://localhost:${port}/pic/${meal.pic}`;  // التأكد من أن المسار يتناسب مع مجلد الصور
-      }
-      return meal;
-    });
-
-    res.json(mealsWithFullImagePaths); // إرجاع البيانات كـ JSON
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error retrieving meals');
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection error:", err);
+  } else {
+    console.log("Database connected successfully!");
   }
 });
 
-// إضافة وجبة جديدة
-app.post('/api/meals', async (req, res) => {
-  const { name, desc, price, categories, pic, made_by } = req.body;
-  if (!name || !desc || !price || !categories || !pic || !made_by) {
-    return res.status(400).send('Missing required fields');
-  }
-  try {
-    const query = 'INSERT INTO meals (name, desc, price, categories, pic, made_by) VALUES (?, ?, ?, ?, ?, ?)';
-    const [result] = await promisePool.query(query, [name, desc, price, categories, pic, made_by]);
-    res.status(201).json({ id: result.insertId, name, desc, price, categories, pic, made_by });
-  } catch (error) {
-    console.error('Error adding meal:', error);
-    res.status(500).send('Error adding meal');
-  }
-});
+// Get all meals with category name and optional filter by category
+app.get("/api/meals", (req, res) => {
+  const { category_id } = req.query; // Get the category_id from the query parameters
 
-// تحديث وجبة
-app.put('/api/meals/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name, desc, price, categories, pic, made_by } = req.body;
-  if (!name || !desc || !price || !categories || !pic || !made_by) {
-    return res.status(400).send('Missing required fields');
+  let query = `
+    SELECT meals.*, categories.name AS category_name
+    FROM meals
+    JOIN categories ON meals.category_id = categories.id
+  `;
+
+  if (category_id) {
+    query += ` WHERE meals.category_id = ?`;
   }
-  try {
-    const query = 'UPDATE meals SET name = ?, desc = ?, price = ?, categories = ?, pic = ?, made_by = ? WHERE id = ?';
-    const [result] = await promisePool.query(query, [name, desc, price, categories, pic, made_by, id]);
-    if (result.affectedRows === 0) {
-      return res.status(404).send('Meal not found');
+
+  db.query(query, category_id ? [category_id] : [], (err, result) => {
+    if (err) {
+      console.error("Error fetching meals:", err);
+      res.status(500).send("Server error");
+    } else {
+      res.json(result);
     }
-    res.status(200).send('Meal updated successfully');
-  } catch (error) {
-    console.error('Error updating meal:', error);
-    res.status(500).send('Error updating meal');
-  }
+  });
 });
 
-// حذف وجبة
-app.delete('/api/meals/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const query = 'DELETE FROM meals WHERE id = ?';
-    const [result] = await promisePool.query(query, [id]);
-    if (result.affectedRows === 0) {
-      return res.status(404).send('Meal not found');
+// Get a single meal by ID
+app.get("/api/meals/:id", (req, res) => {
+  const mealId = req.params.id;
+  const query = `
+    SELECT meals.*, categories.name AS category_name
+    FROM meals
+    JOIN categories ON meals.category_id = categories.id
+    WHERE meals.id = ?
+  `;
+
+  db.query(query, [mealId], (err, result) => {
+    if (err) {
+      console.error("Error fetching meal:", err);
+      res.status(500).send("Server error");
+    } else {
+      res.json(result[0]);
     }
-    res.status(200).send('Meal deleted successfully');
-  } catch (error) {
-    console.error('Error deleting meal:', error);
-    res.status(500).send('Error deleting meal');
-  }
+  });
 });
 
-// تشغيل الخادم
+// Add a new meal
+app.post("/api/meals", (req, res) => {
+  const { name, description, price, category_id, pic, made_by, rating, popularity } = req.body;
+  const query = `
+    INSERT INTO meals (name, description, price, category_id, pic, made_by, rating, popularity)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [name, description, price, category_id, pic, made_by, rating, popularity], (err, result) => {
+    if (err) {
+      console.error("Error adding meal:", err);
+      res.status(500).send("Server error");
+    } else {
+      res.status(201).json({ message: "Meal added successfully", id: result.insertId });
+    }
+  });
+});
+
+// Update a meal
+app.put("/api/meals/:id", (req, res) => {
+  const mealId = req.params.id;
+  const { name, description, price, category_id, pic, made_by, rating, popularity } = req.body;
+  const query = `
+    UPDATE meals
+    SET name = ?, description = ?, price = ?, category_id = ?, pic = ?, made_by = ?, rating = ?, popularity = ?
+    WHERE id = ?
+  `;
+
+  db.query(query, [name, description, price, category_id, pic, made_by, rating, popularity, mealId], (err, result) => {
+    if (err) {
+      console.error("Error updating meal:", err);
+      res.status(500).send("Server error");
+    } else {
+      res.json({ message: "Meal updated successfully" });
+    }
+  });
+});
+
+// Delete a meal
+app.delete("/api/meals/:id", (req, res) => {
+  const mealId = req.params.id;
+  const query = "DELETE FROM meals WHERE id = ?";
+
+  db.query(query, [mealId], (err, result) => {
+    if (err) {
+      console.error("Error deleting meal:", err);
+      res.status(500).send("Server error");
+    } else {
+      res.json({ message: "Meal deleted successfully" });
+    }
+  });
+});
+
+// Get all categories for the select input
+app.get("/api/categories", (req, res) => {
+  const query = "SELECT * FROM categories";
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error("Error fetching categories:", err);
+      res.status(500).send("Server error");
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+// Serve images
+app.get("/pic/:imageName", (req, res) => {
+  const imageName = req.params.imageName;
+  const imagePath = path.join(__dirname, "public", "pic", imageName);
+  res.sendFile(imagePath);
+});
+
+// Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
 });

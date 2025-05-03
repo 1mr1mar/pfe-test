@@ -1,19 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db");
+const db = require("../db"); // Assuming db is set up with mysql2's promise pool
 
 // Get all categories
-router.get("/", (req, res) => {
-  const sql = "SELECT * FROM categories";
+router.get("/", async (req, res) => {
+  try {
+    // استخدام Promise بدلاً من callback
+    const [rows] = await db.query("SELECT * FROM categories");
 
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error fetching categories:", err);
-      return res.status(500).json({ error: "Failed to fetch categories" });
-    }
-
-    res.json(results);
-  });
+    // إرسال البيانات كـ JSON
+    res.json(rows);
+  } catch (err) {
+    console.error("Error fetching categories:", err);
+    res.status(500).json({ error: "Failed to fetch categories" });
+  }
 });
 
 module.exports = router;

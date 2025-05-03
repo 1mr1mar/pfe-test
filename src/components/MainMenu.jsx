@@ -17,6 +17,7 @@ const MainMenu = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsData, setProductsData] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
+  const [categoriesMap, setCategoriesMap] = useState({});
   const productsPerPage = 6;
 
   // Fetch products from backend
@@ -25,18 +26,6 @@ const MainMenu = () => {
       try {
         const response = await axios.get("http://localhost:5000/api/meals");
         setProductsData(response.data);
-
-        // Extract all unique categories
-        const categoriesSet = new Set();
-        response.data.forEach((product) => {
-          if (product.categories) {
-            const productCategories = product.categories.split(",");
-            productCategories.forEach((cat) => categoriesSet.add(cat.trim()));
-          }
-        });
-
-        // Add 'All' as a category option at the beginning of the list
-        setAllCategories(["All", ...Array.from(categoriesSet)]);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -44,12 +33,35 @@ const MainMenu = () => {
     fetchProducts();
   }, []);
 
+  // Fetch categories from API
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/categories")
+      .then((res) => {
+        const categories = res.data;
+        const categoryNames = categories.map((cat) => cat.name);
+        setAllCategories(["All", ...categoryNames]);
+
+        const catMap = {};
+        categories.forEach((cat) => {
+          catMap[cat.name] = cat.id;
+        });
+        setCategoriesMap(catMap);
+      })
+      .catch((err) => {
+        console.error("Error fetching categories:", err);
+      });
+  }, []);
+
   // Filtering logic
   const filteredProducts = productsData.filter((product) => {
-    const productCategories = product.categories?.split(",").map((cat) => cat.trim()) || [];
-    const matchesCategory = categoryFilter === "All" || productCategories.includes(categoryFilter);
+    const matchesCategory =
+      categoryFilter === "All" ||
+      product.category_id === categoriesMap[categoryFilter];
     const matchesPrice = product.price <= priceFilter;
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     return matchesCategory && matchesPrice && matchesSearch;
   });
 
@@ -71,7 +83,10 @@ const MainMenu = () => {
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = sortedProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -216,11 +231,15 @@ const MainMenu = () => {
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >
-                {allCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
+                {allCategories.length > 0 ? (
+                  allCategories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading categories...</option>
+                )}
               </select>
             </div>
 

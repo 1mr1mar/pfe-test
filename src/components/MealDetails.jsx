@@ -76,7 +76,7 @@ const MealDetails = () => {
             </div>
             <div className="flex items-center space-x-4 my-4">
               <span className="font-semibold">Category:</span>
-              <span>{product.categories}</span>
+              <span> {product.category_name}</span>
             </div>
             <div className="flex items-center space-x-4 my-4">
               <span className="font-semibold">Popularity:</span>

@@ -8,7 +8,8 @@ const port = 5000;
 
 app.use(cors());
 app.use(express.json());
-const categoriesRoutes = require("./routes/categories");
+
+const categoriesRoutes = require("./src/routes/categories");
 app.use("/api/categories", categoriesRoutes);
 
 // MySQL database connection
@@ -29,7 +30,7 @@ db.connect((err) => {
 
 // Get all meals with category name and optional filter by category
 app.get("/api/meals", (req, res) => {
-  const { category_id } = req.query; // Get the category_id from the query parameters
+  const { category_name } = req.query; // نستخدم category_name بدلاً من category_id
 
   let query = `
     SELECT meals.*, categories.name AS category_name
@@ -37,11 +38,14 @@ app.get("/api/meals", (req, res) => {
     JOIN categories ON meals.category_id = categories.id
   `;
 
-  if (category_id) {
-    query += ` WHERE meals.category_id = ?`;
+  let params = [];
+
+  if (category_name) {
+    query += ` WHERE categories.name = ?`;
+    params.push(category_name);
   }
 
-  db.query(query, category_id ? [category_id] : [], (err, result) => {
+  db.query(query, params, (err, result) => {
     if (err) {
       console.error("Error fetching meals:", err);
       res.status(500).send("Server error");
@@ -50,6 +54,7 @@ app.get("/api/meals", (req, res) => {
     }
   });
 });
+
 
 // Get a single meal by ID
 app.get("/api/meals/:id", (req, res) => {

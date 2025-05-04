@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";  // Import axios for API requests
+import axios from "axios";
 import Navbar from "./Landing/Navbar";
 import Footer from "./Landing/Footer";
 import { motion } from "framer-motion"; 
+import Cartsvg from "./Cartsvg"; // Assuming you have a Cartsvg component
 
 const MealDetails = () => {
   const { id } = useParams();
@@ -22,11 +23,17 @@ const MealDetails = () => {
       .catch((error) => {
         console.error("There was an error fetching the meal data!", error);
       });
+
+    // Load cart from localStorage if available
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(savedCart);
   }, [id]);
 
   const handleAddToCart = () => {
     const newProduct = { ...product, quantity, note };
-    setCart([...cart, newProduct]);
+    const updatedCart = [...cart, newProduct];
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save cart to localStorage
     alert(`${product.name} has been added to your cart!`);
   };
 
@@ -34,6 +41,14 @@ const MealDetails = () => {
 
   return (
     <div className="bg-green-ziti pt-45 text-yellow-gold min-h-screen">
+      <div className="z-10 flex justify-between items-center pt-4 px-8">
+        <Link to="/cart">
+          <div className="cursor-pointer z-50001 fixed top-4 right-4 flex items-center space-x-2">
+            <Cartsvg className="w-12 h-12 text-yellow-gold cursor-pointer hover:scale-110 transition-transform duration-300" />
+            <span className="text-yellow-gold">Cart</span>
+          </div>
+        </Link>
+      </div>
       <div className="fixed z-5001 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="fixed z-5001 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
 

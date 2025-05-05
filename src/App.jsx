@@ -14,6 +14,7 @@ import AddReviewForm from "./components/AddReviewForm";
 import ReviewsPage from "./components/ReviewsPage";
 import MealDetails from "./components/MealDetails";
 import CartPage from "./components/CartPage";
+import Checkout from "./components/Checkout";
 
 import DashboardLayout from "./components/admin/DashboardLayout";
 import DashboardHome from "./components/admin/DashboardHome";
@@ -43,6 +44,7 @@ function App() {
         <Route path="/reviews" element={<ReviewsPage />} />
         <Route path="/product/:id" element={<MealDetails />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<Checkout />} />
 
         {/* Login */}
         <Route path="/admin/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />

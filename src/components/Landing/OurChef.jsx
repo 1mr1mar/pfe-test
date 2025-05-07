@@ -48,7 +48,6 @@ const OurChef = () => {
       ref={ref}
       className="relative min-h-screen z-22 flex flex-col items-center justify-center bg-green-khzy text-yellow-gold px-6 py-20"
     >
-      {/* Decorative lines */}
       <div className="absolute z-10 top-0 left-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1 opacity-50"></div>
       <div className="absolute z-10 top-0 left-[calc(8/20*100%)] h-full w-[1px] bg-yellow-gold1 opacity-50"></div>
       <div className="absolute z-10 top-0 right-[calc(8/20*100%)] h-full w-[1px] bg-yellow-gold1 opacity-50"></div>
@@ -113,10 +112,11 @@ const OurChef = () => {
           transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
         >
           <p className="text-lg text-gray-300 max-w-xl leading-relaxed mb-8">
-            With over two decades of culinary expertise, our head chef brings a unique
-            blend of traditional techniques and innovative approaches to every dish.
-            Their passion for creating memorable dining experiences has earned them
-            numerous accolades and the admiration of food enthusiasts worldwide.
+            With over two decades of culinary expertise, our head chef brings a
+            unique blend of traditional techniques and innovative approaches to
+            every dish. Their passion for creating memorable dining experiences
+            has earned them numerous accolades and the admiration of food
+            enthusiasts worldwide.
           </p>
           <Link to="/chefs">
             <motion.button
@@ -146,7 +146,6 @@ const OurChef = () => {
         </motion.div>
       </div>
 
-      {/* Decorative SVG */}
       <motion.div
         className="absolute bottom-0 left-0 z-10"
         initial={{ opacity: 0, x: -50 }}

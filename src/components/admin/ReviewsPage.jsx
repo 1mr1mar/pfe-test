@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaTrash, FaStar } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ReviewsPage = () => {
   const [reviews, setReviews] = useState([
@@ -23,14 +24,6 @@ const ReviewsPage = () => {
     },
   ]);
 
-  const [showModal, setShowModal] = useState(false);
-  const [editingReview, setEditingReview] = useState(null);
-  const [formData, setFormData] = useState({
-    product: "",
-    rating: "",
-    comment: "",
-  });
-
   const handleDelete = (index) => {
     if (window.confirm("Are you sure you want to delete this review?")) {
       const newReviews = [...reviews];
@@ -39,160 +32,59 @@ const ReviewsPage = () => {
     }
   };
 
-  const handleEdit = (review, index) => {
-    setEditingReview(index);
-    setFormData({ ...review });
-    setShowModal(true);
-  };
-
-  const handleAddNew = () => {
-    setEditingReview(null);
-    setFormData({
-      product: "",
-      rating: "",
-      comment: "",
-    });
-    setShowModal(true);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const newReview = {
-      ...formData,
-      id: editingReview !== null ? reviews[editingReview].id : Date.now(),
-    };
-
-    if (editingReview !== null) {
-      const updatedReviews = [...reviews];
-      updatedReviews[editingReview] = newReview;
-      setReviews(updatedReviews);
-    } else {
-      setReviews([...reviews, newReview]);
-    }
-
-    setShowModal(false);
-    setFormData({
-      product: "",
-      rating: "",
-      comment: "",
-    });
-  };
-
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h2
-          className="text-5xl text-center pt-10 text-yellow-gold1 mb-6"
-          style={{ fontFamily: "font1, sans-serif" }}
-        >
-          Reviews Management
-        </h2>
-        <button
-          onClick={handleAddNew}
-          className="flex items-center bg-yellow-gold1 hover:bg-yellow-gold text-green-ziti font-bold py-2 px-4 rounded-lg transition-colors duration-300"
-        >
-          <FaPlus className="mr-2" /> Add Review
-        </button>
-      </div>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {reviews.map((review, index) => (
-          <div
-            key={review.id}
-            className="bg-green-ziti rounded-2xl shadow-lg p-4 text-gray-300"
+    <div className="p-8 bg-green-ziti min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-center items-center mb-12">
+          <motion.h2
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-6xl text-center pt-10 text-yellow-gold1 mb-6 font-serif tracking-wide"
+            style={{ fontFamily: "font1, serif" }}
           >
-            <h3 className="text-xl font-bold text-yellow-gold1">{review.product}</h3>
-            <p className="text-yellow-gold mb-1">{`Rating: ${review.rating} / 5`}</p>
-            <p className="text-sm mb-3">{review.comment}</p>
-            <div className="flex space-x-4">
-              <button
-                className="text-yellow-gold1 hover:text-yellow-400 p-2 rounded-full hover:bg-green-800 transition-colors duration-300"
-                onClick={() => handleEdit(review, index)}
-                aria-label={`Edit ${review.product}`}
-              >
-                <FaEdit />
-              </button>
-              <button
-                className="text-red-400 hover:text-red-600 p-2 rounded-full hover:bg-green-800 transition-colors duration-300"
-                onClick={() => handleDelete(index)}
-                aria-label={`Delete ${review.product}`}
-              >
-                <FaTrash />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-green-ziti p-6 rounded-xl shadow-2xl w-full max-w-md">
-            <h3 className="text-xl font-bold text-yellow-gold1 mb-4">
-              {editingReview !== null ? "Edit Review" : "Add New Review"}
-            </h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-yellow-gold1 mb-2">Product</label>
-                <input
-                  type="text"
-                  name="product"
-                  value={formData.product}
-                  onChange={handleInputChange}
-                  className="w-full bg-green-ziti border border-green-khzy rounded p-2 text-gray-200"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-yellow-gold1 mb-2">Rating</label>
-                <input
-                  type="number"
-                  name="rating"
-                  value={formData.rating}
-                  onChange={handleInputChange}
-                  className="w-full bg-green-ziti border border-green-khzy rounded p-2 text-gray-200"
-                  required
-                  min="1"
-                  max="5"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-yellow-gold1 mb-2">Comment</label>
-                <textarea
-                  name="comment"
-                  value={formData.comment}
-                  onChange={handleInputChange}
-                  className="w-full bg-green-800 border border-green-khzy rounded p-2 text-gray-200 h-24"
-                  required
-                ></textarea>
-              </div>
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-yellow-gold1 hover:bg-yellow-gold text-green-ziti font-bold py-2 px-4 rounded"
-                >
-                  {editingReview !== null ? "Update" : "Add"}
-                </button>
-              </div>
-            </form>
-          </div>
+            Customer Reviews
+          </motion.h2>
         </div>
-      )}
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <AnimatePresence>
+            {reviews.map((review, index) => (
+              <motion.div
+                key={review.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                whileHover={{ y: -5 }}
+                className="bg-green-ziti rounded-3xl shadow-2xl p-6 text-gray-300 border border-yellow-gold1/20 backdrop-blur-sm"
+              >
+                <h3 className="text-2xl font-bold text-yellow-gold1 mb-3 font-serif">{review.product}</h3>
+                <div className="flex items-center mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <FaStar
+                      key={i}
+                      className={`w-5 h-5 ${
+                        i < review.rating ? "text-yellow-gold1" : "text-gray-600"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-gray-200 mb-4 italic">{review.comment}</p>
+                <div className="flex justify-end">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="text-red-400 hover:text-red-600 p-2 rounded-full hover:bg-green-800/50 transition-colors duration-300"
+                    onClick={() => handleDelete(index)}
+                    aria-label={`Delete ${review.product}`}
+                  >
+                    <FaTrash />
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,200 +1,272 @@
 import React, { useState } from "react";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaClock, FaImage, FaLink, FaPhone, FaMapMarkerAlt, FaEnvelope, FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 
 const SittingsPage = () => {
-  const [sittings, setSittings] = useState([
-    { id: 1, tableNumber: 1, seats: 4, status: "available", reservedTime: "" },
-    { id: 2, tableNumber: 2, seats: 2, status: "occupied", reservedTime: "2025-04-27 18:00" },
-    { id: 3, tableNumber: 3, seats: 6, status: "available", reservedTime: "" },
-  ]);
-
-  const [showModal, setShowModal] = useState(false);
-  const [editingSitting, setEditingSitting] = useState(null);
-  const [formData, setFormData] = useState({
-    tableNumber: "",
-    seats: "",
-    status: "",
-    reservedTime: "",
+  const [restaurantSettings, setRestaurantSettings] = useState({
+    operatingHours: {
+      monday: { open: "09:00", close: "22:00" },
+      tuesday: { open: "09:00", close: "22:00" },
+      wednesday: { open: "09:00", close: "22:00" },
+      thursday: { open: "09:00", close: "22:00" },
+      friday: { open: "09:00", close: "23:00" },
+      saturday: { open: "10:00", close: "23:00" },
+      sunday: { open: "10:00", close: "22:00" },
+    },
+    branding: {
+      logo: "",
+      restaurantName: "Your Restaurant Name",
+      tagline: "Your Restaurant Tagline",
+    },
+    contact: {
+      phone: "",
+      email: "",
+      address: "",
+    },
+    socialMedia: {
+      facebook: "",
+      instagram: "",
+      twitter: "",
+    }
   });
 
-  const handleDelete = (index) => {
-    if (window.confirm("Are you sure you want to delete this sitting?")) {
-      const newSittings = [...sittings];
-      newSittings.splice(index, 1);
-      setSittings(newSittings);
-    }
+  const [activeTab, setActiveTab] = useState("hours");
+
+  const handleSettingsChange = (section, field, value) => {
+    setRestaurantSettings(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value
+      }
+    }));
   };
 
-  const handleEdit = (sitting, index) => {
-    setEditingSitting(index);
-    setFormData({ ...sitting });
-    setShowModal(true);
-  };
-
-  const handleAddNew = () => {
-    setEditingSitting(null);
-    setFormData({
-      tableNumber: "",
-      seats: "",
-      status: "available",
-      reservedTime: "",
-    });
-    setShowModal(true);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const newSitting = {
-      ...formData,
-      id: editingSitting !== null ? sittings[editingSitting].id : Date.now(),
-    };
-
-    if (editingSitting !== null) {
-      const updatedSittings = [...sittings];
-      updatedSittings[editingSitting] = newSitting;
-      setSittings(updatedSittings);
-    } else {
-      setSittings([...sittings, newSitting]);
-    }
-
-    setShowModal(false);
-    setFormData({
-      tableNumber: "",
-      seats: "",
-      status: "available",
-      reservedTime: "",
-    });
+  const handleOperatingHoursChange = (day, field, value) => {
+    setRestaurantSettings(prev => ({
+      ...prev,
+      operatingHours: {
+        ...prev.operatingHours,
+        [day]: {
+          ...prev.operatingHours[day],
+          [field]: value
+        }
+      }
+    }));
   };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h2
-          className="text-5xl text-center pt-10 text-yellow-gold1 mb-6"
-          style={{ fontFamily: "font1, sans-serif" }}
-        >
-          Table Management
-        </h2>
+    <div className="p-6 max-w-6xl mx-auto">
+      <h2 className="text-4xl font-bold text-center text-yellow-gold1 mb-8" style={{ fontFamily: "font1, sans-serif" }}>
+        Restaurant Settings
+      </h2>
+
+      {/* Navigation Tabs */}
+      <div className="flex justify-center space-x-4 mb-8">
         <button
-          onClick={handleAddNew}
-          className="flex items-center bg-yellow-gold1 hover:bg-yellow-gold text-green-ziti font-bold py-2 px-4 rounded-lg transition-colors duration-300"
+          onClick={() => setActiveTab("hours")}
+          className={`flex items-center px-6 py-3 rounded-lg transition-all duration-300 ${
+            activeTab === "hours" 
+              ? "bg-yellow-gold1 text-green-ziti shadow-lg" 
+              : "bg-green-ziti text-yellow-gold1 hover:scale-105"
+          }`}
         >
-          <FaPlus className="mr-2" /> Add Sitting
+          <FaClock className="mr-2" /> Operating Hours
+        </button>
+        <button
+          onClick={() => setActiveTab("branding")}
+          className={`flex items-center px-6 py-3 rounded-lg transition-all duration-300 ${
+            activeTab === "branding" 
+              ? "bg-yellow-gold1 text-green-ziti shadow-lg" 
+              : "bg-green-ziti text-yellow-gold1 hover:scale-105"
+          }`}
+        >
+          <FaImage className="mr-2" /> Branding
+        </button>
+        <button
+          onClick={() => setActiveTab("contact")}
+          className={`flex items-center px-6 py-3 rounded-lg transition-all duration-300 ${
+            activeTab === "contact" 
+              ? "bg-yellow-gold1 text-green-ziti shadow-lg" 
+              : "bg-green-ziti text-yellow-gold1 hover:scale-105"
+          }`}
+        >
+          <FaLink className="mr-2" /> Contact & Social
         </button>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sittings.map((sitting, index) => (
-          <div
-            key={sitting.id}
-            className="bg-green-ziti rounded-2xl shadow-lg p-4 text-gray-300"
-          >
-            <h3 className="text-xl font-bold text-yellow-gold1">Table {sitting.tableNumber}</h3>
-            <p className="text-yellow-gold mb-1">{`Seats: ${sitting.seats}`}</p>
-            <p className="text-sm mb-3">{`Status: ${sitting.status}`}</p>
-            {sitting.status === "occupied" && (
-              <p className="text-yellow-gold mb-3">{`Reserved for: ${sitting.reservedTime}`}</p>
-            )}
-            <div className="flex space-x-4">
-              <button
-                className="text-yellow-gold1 hover:text-yellow-400 p-2 rounded-full hover:bg-green-800 transition-colors duration-300"
-                onClick={() => handleEdit(sitting, index)}
-                aria-label={`Edit Table ${sitting.tableNumber}`}
-              >
-                <FaEdit />
-              </button>
-              <button
-                className="text-red-400 hover:text-red-600 p-2 rounded-full hover:bg-green-800 transition-colors duration-300"
-                onClick={() => handleDelete(index)}
-                aria-label={`Delete Table ${sitting.tableNumber}`}
-              >
-                <FaTrash />
-              </button>
+      {/* Operating Hours Section */}
+      {activeTab === "hours" && (
+        <div className="bg-green-ziti rounded-2xl shadow-xl p-8">
+          <div className="flex items-center mb-6">
+            <FaClock className="text-3xl text-yellow-gold1 mr-4" />
+            <h3 className="text-2xl font-bold text-yellow-gold1">Operating Hours</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Object.entries(restaurantSettings.operatingHours).map(([day, hours]) => (
+              <div key={day} className="bg-green-khzy border-1 border-yellow-gold bg-opacity-50 p-4 rounded-lg">
+                <span className="block text-yellow-gold1 font-semibold mb-2 capitalize">{day}</span>
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <label className="block text-sm text-yellow-gold1 mb-1">Open</label>
+                    <input
+                      type="time"
+                      value={hours.open}
+                      onChange={(e) => handleOperatingHoursChange(day, "open", e.target.value)}
+                      className="w-full bg-green-ziti border border-green-khzy rounded p-2 text-gray-200"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm text-yellow-gold1 mb-1">Close</label>
+                    <input
+                      type="time"
+                      value={hours.close}
+                      onChange={(e) => handleOperatingHoursChange(day, "close", e.target.value)}
+                      className="w-full bg-green-ziti border border-green-khzy rounded p-2 text-gray-200"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Branding Section */}
+      {activeTab === "branding" && (
+        <div className="bg-green-ziti rounded-2xl shadow-xl p-8">
+          <div className="flex items-center mb-6">
+            <FaImage className="text-3xl text-yellow-gold1 mr-4" />
+            <h3 className="text-2xl font-bold text-yellow-gold1">Branding</h3>
+          </div>
+          <div className="space-y-6">
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg">
+              <label className="block text-yellow-gold1 font-semibold mb-2">Restaurant Name</label>
+              <input
+                type="text"
+                value={restaurantSettings.branding.restaurantName}
+                onChange={(e) => handleSettingsChange("branding", "restaurantName", e.target.value)}
+                className="w-full bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                placeholder="Enter restaurant name"
+              />
+            </div>
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg">
+              <label className="block text-yellow-gold1 font-semibold mb-2">Tagline</label>
+              <input
+                type="text"
+                value={restaurantSettings.branding.tagline}
+                onChange={(e) => handleSettingsChange("branding", "tagline", e.target.value)}
+                className="w-full bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                placeholder="Enter restaurant tagline"
+              />
+            </div>
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg">
+              <label className="block text-yellow-gold1 font-semibold mb-2">Logo</label>
+              <div className="flex items-center space-x-4">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleSettingsChange("branding", "logo", e.target.files[0])}
+                  className="flex-1 bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                />
+                <button className="bg-yellow-gold1 text-green-ziti px-4 py-3 rounded-lg hover:bg-yellow-gold transition-colors duration-300">
+                  Upload
+                </button>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-green-ziti p-6 rounded-xl shadow-2xl w-full max-w-md">
-            <h3 className="text-xl font-bold text-yellow-gold1 mb-4">
-              {editingSitting !== null ? "Edit Sitting" : "Add New Sitting"}
-            </h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-yellow-gold1 mb-2">Table Number</label>
-                <input
-                  type="number"
-                  name="tableNumber"
-                  value={formData.tableNumber}
-                  onChange={handleInputChange}
-                  className="w-full bg-green-ziti border border-green-khzy rounded p-2 text-gray-200"
-                  required
-                />
+      {/* Contact & Social Section */}
+      {activeTab === "contact" && (
+        <div className="bg-green-ziti rounded-2xl shadow-xl p-8">
+          <div className="flex items-center mb-6">
+            <FaLink className="text-3xl text-yellow-gold1 mr-4" />
+            <h3 className="text-2xl font-bold text-yellow-gold1">Contact & Social Media</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg">
+              <div className="flex items-center mb-4">
+                <FaPhone className="text-yellow-gold1 mr-2" />
+                <label className="text-yellow-gold1 font-semibold">Phone Number</label>
               </div>
-              <div className="mb-4">
-                <label className="block text-yellow-gold1 mb-2">Seats</label>
-                <input
-                  type="number"
-                  name="seats"
-                  value={formData.seats}
-                  onChange={handleInputChange}
-                  className="w-full bg-green-ziti border border-green-khzy rounded p-2 text-gray-200"
-                  required
-                />
+              <input
+                type="tel"
+                value={restaurantSettings.contact.phone}
+                onChange={(e) => handleSettingsChange("contact", "phone", e.target.value)}
+                className="w-full bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                placeholder="Enter phone number"
+              />
+            </div>
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg">
+              <div className="flex items-center mb-4">
+                <FaEnvelope className="text-yellow-gold1 mr-2" />
+                <label className="text-yellow-gold1 font-semibold">Email Address</label>
               </div>
-              <div className="mb-4">
-                <label className="block text-yellow-gold1 mb-2">Status</label>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleInputChange}
-                  className="w-full bg-green-ziti border border-green-khzy rounded p-2 text-gray-200"
-                  required
-                >
-                  <option value="available">Available</option>
-                  <option value="occupied">Occupied</option>
-                </select>
+              <input
+                type="email"
+                value={restaurantSettings.contact.email}
+                onChange={(e) => handleSettingsChange("contact", "email", e.target.value)}
+                className="w-full bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                placeholder="Enter email address"
+              />
+            </div>
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg md:col-span-2">
+              <div className="flex items-center mb-4">
+                <FaMapMarkerAlt className="text-yellow-gold1 mr-2" />
+                <label className="text-yellow-gold1 font-semibold">Address</label>
               </div>
-              {formData.status === "occupied" && (
-                <div className="mb-4">
-                  <label className="block text-yellow-gold1 mb-2">Reserved Time</label>
-                  <input
-                    type="datetime-local"
-                    name="reservedTime"
-                    value={formData.reservedTime}
-                    onChange={handleInputChange}
-                    className="w-full bg-green-ziti border border-green-khzy rounded p-2 text-gray-200"
-                    required
-                  />
-                </div>
-              )}
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-yellow-gold1 hover:bg-yellow-gold text-green-ziti font-bold py-2 px-4 rounded"
-                >
-                  {editingSitting !== null ? "Update" : "Add"}
-                </button>
+              <textarea
+                value={restaurantSettings.contact.address}
+                onChange={(e) => handleSettingsChange("contact", "address", e.target.value)}
+                className="w-full bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                rows="3"
+                placeholder="Enter restaurant address"
+              />
+            </div>
+          </div>
+
+          <h4 className="text-xl font-bold text-yellow-gold1 mt-8 mb-6">Social Media Links</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg">
+              <div className="flex items-center mb-4">
+                <FaFacebook className="text-yellow-gold1 mr-2" />
+                <label className="text-yellow-gold1 font-semibold">Facebook</label>
               </div>
-            </form>
+              <input
+                type="url"
+                value={restaurantSettings.socialMedia.facebook}
+                onChange={(e) => handleSettingsChange("socialMedia", "facebook", e.target.value)}
+                className="w-full bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                placeholder="Enter Facebook URL"
+              />
+            </div>
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg">
+              <div className="flex items-center mb-4">
+                <FaInstagram className="text-yellow-gold1 mr-2" />
+                <label className="text-yellow-gold1 font-semibold">Instagram</label>
+              </div>
+              <input
+                type="url"
+                value={restaurantSettings.socialMedia.instagram}
+                onChange={(e) => handleSettingsChange("socialMedia", "instagram", e.target.value)}
+                className="w-full bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                placeholder="Enter Instagram URL"
+              />
+            </div>
+            <div className="bg-green-khzy bg-opacity-50 p-6 rounded-lg">
+              <div className="flex items-center mb-4">
+                <FaTwitter className="text-yellow-gold1 mr-2" />
+                <label className="text-yellow-gold1 font-semibold">Twitter</label>
+              </div>
+              <input
+                type="url"
+                value={restaurantSettings.socialMedia.twitter}
+                onChange={(e) => handleSettingsChange("socialMedia", "twitter", e.target.value)}
+                className="w-full bg-green-ziti border border-green-khzy rounded p-3 text-gray-200"
+                placeholder="Enter Twitter URL"
+              />
+            </div>
           </div>
         </div>
       )}

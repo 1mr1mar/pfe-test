@@ -1,16 +1,81 @@
 const Fuse = require("fuse.js");
 
 // Welcome message for new users
-const welcomeMessage = "Welcome to our restaurant! 👋 I'm here to help you with:\n" +
-  "• <a href='/menu' class='text-blue-500 hover:text-blue-600'>View our menu</a> and discover our dishes\n" +
-  "• <a href='/booking' class='text-blue-500 hover:text-blue-600'>Make a reservation</a>\n" +
-  "• <a href='/reviews' class='text-blue-500 hover:text-blue-600'>Read customer reviews</a>\n" +
-  "• <a href='/contact' class='text-blue-500 hover:text-blue-600'>Contact us</a>\n" +
-  "• <a href='/about' class='text-blue-500 hover:text-blue-600'>Learn about us</a>\n\n" +
-  "How can I assist you today?";
+const welcomeMessage = `
+<div class="space-y-4">
+  <p class="text-lg font-semibold">Welcome to our restaurant! 👋</p>
+  
+  <div class="space-y-2">
+    <p><strong>English:</strong> Hello! How can I assist you today? 😊</p>
+    <p><strong>Français :</strong> Bonjour ! Comment puis-je vous aider aujourd'hui ? 😊</p>
+    <p><strong>العربية:</strong> مرحباً! كيف يمكنني مساعدتك اليوم؟ 😊</p>
+  </div>
+
+  <div class="space-y-2">
+    <p>I can help you with:</p>
+    <ul class="list-disc pl-5">
+      <li><a href='/menu' class='text-blue-500 hover:text-blue-600'>View our menu</a> and discover our dishes</li>
+      <li><a href='/booking' class='text-blue-500 hover:text-blue-600'>Make a reservation</a></li>
+      <li><a href='/reviews' class='text-blue-500 hover:text-blue-600'>Read customer reviews</a></li>
+      <li><a href='/contact' class='text-blue-500 hover:text-blue-600'>Contact us</a></li>
+      <li><a href='/about' class='text-blue-500 hover:text-blue-600'>Learn about us</a></li>
+    </ul>
+  </div>
+</div>`;
 
 // Enhanced FAQ database with more comprehensive responses and interactive links
 const faq = [
+  // Basic Information
+  {
+    question: "what is your name",
+    answer: "I'm your friendly restaurant assistant! I'm here to help you with reservations, menu information, and any questions about our restaurant. How can I assist you today?"
+  },
+  {
+    question: "how can i contact support",
+    answer: "You can reach our support team in several ways:\n" +
+      "• <a href='/contact' class='text-blue-500 hover:text-blue-600'>Contact Form</a>\n" +
+      "• Email: support@restaurant.com\n" +
+      "• Phone: +212-XXX-XXXXXX\n" +
+      "• <a href='/contact#live-chat' class='text-blue-500 hover:text-blue-600'>Live Chat</a>\n\n" +
+      "Our support team is available daily from 9 AM to 11 PM."
+  },
+  // Greetings in multiple languages
+  {
+    question: "hi",
+    answer: welcomeMessage
+  },
+  {
+    question: "hello",
+    answer: welcomeMessage
+  },
+  {
+    question: "hey",
+    answer: welcomeMessage
+  },
+  {
+    question: "welcome",
+    answer: welcomeMessage
+  },
+  {
+    question: "bonjour",
+    answer: welcomeMessage
+  },
+  {
+    question: "salut",
+    answer: welcomeMessage
+  },
+  {
+    question: "مرحبا",
+    answer: welcomeMessage
+  },
+  {
+    question: "اهلا",
+    answer: welcomeMessage
+  },
+  {
+    question: "اهلاً",
+    answer: welcomeMessage
+  },
   // English Questions
   {
     question: "i want to see the menu",

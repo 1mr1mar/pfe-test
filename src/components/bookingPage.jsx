@@ -10,7 +10,6 @@ import Herosvg from "./Landing/svgn2";
 const Book = () => {
   return (
     <section className="relative min-h-screen bg-green-ziti">
-     
       <div className="fixed z-500 top-0 left-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="fixed z-500 top-0 right-1/18 h-full w-[1px] bg-yellow-gold"></div>
       <div className="absolute z-[-1] top-0 left-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1"></div>
@@ -20,7 +19,6 @@ const Book = () => {
 
       <Navbar />
 
-      
       <motion.div
         style={{
           backgroundImage: `url(/pic/pic1-homme.jpg)`,
@@ -30,7 +28,7 @@ const Book = () => {
           height: "70vh",
           zIndex: 100,
         }}
-        className="h-2/3 w-full border-b border-yellow-gold1  bg-cover bg-no-repeat flex items-center justify-center"
+        className="w-full flex items-center justify-center border-b border-yellow-gold1"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
@@ -51,10 +49,8 @@ const Book = () => {
         </motion.h1>
       </motion.div>
 
-      {/* Booking Form */}
-      <div className="w-full   mx-auto p-8 bg-green-ziti bg-opacity-80 rounded-lg shadow-lg mt-12">
+      <div className="w-full mx-auto p-8 bg-green-ziti bg-opacity-80 rounded-lg shadow-lg mt-12">
         <form className="flex flex-col md:flex-row gap-12">
-         
           <motion.div
             className="w-full ml-50 md:w-1/2 flex flex-col gap-6"
             initial={{ opacity: 0, x: 50 }}
@@ -72,7 +68,7 @@ const Book = () => {
                 type="text"
                 name="fullName"
                 required
-                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold placeholder-yellow-gold1 text-xl w-full "
+                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold placeholder-yellow-gold1 text-xl w-full"
                 placeholder="Enter your full name"
               />
             </div>
@@ -88,7 +84,7 @@ const Book = () => {
                 type="email"
                 name="email"
                 required
-                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold placeholder-yellow-gold1 text-xl w-full "
+                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold placeholder-yellow-gold1 text-xl w-full"
                 placeholder="Enter your email"
               />
             </div>
@@ -104,13 +100,12 @@ const Book = () => {
                 type="tel"
                 name="phone"
                 required
-                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold placeholder-yellow-gold1 text-xl w-full "
+                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold placeholder-yellow-gold1 text-xl w-full"
                 placeholder="Enter your phone number"
               />
             </div>
           </motion.div>
 
-          
           <motion.div
             className="w-full mr-50 md:w-1/2 flex flex-col gap-6"
             initial={{ opacity: 0, x: -50 }}
@@ -127,7 +122,7 @@ const Book = () => {
               <select
                 name="guests"
                 required
-                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold text-xl w-full "
+                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold text-xl w-full"
               >
                 {[...Array(10)].map((_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -148,7 +143,7 @@ const Book = () => {
                 type="date"
                 name="date"
                 required
-                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold text-xl w-full "
+                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold text-xl w-full"
               />
             </div>
 
@@ -163,18 +158,20 @@ const Book = () => {
                 type="time"
                 name="time"
                 required
-                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold text-xl w-full "
+                className="p-5 border-2 border-yellow-gold1 bg-transparent text-yellow-gold text-xl w-full"
               />
             </div>
           </motion.div>
         </form>
+
         <button
           type="submit"
-          className="mt-10 ml-200  p-5 bg-transparont border-yellow-gold1 border-1 text-yellow-gold1 text-xl font-semibold  shadow-lg transition duration-300 hover:bg-yellow-gold1 hover:text-white"
+          className="mt-10 ml-200 p-5 bg-transparent border-yellow-gold1 border-1 text-yellow-gold1 text-xl font-semibold shadow-lg transition duration-300 hover:bg-yellow-gold1 hover:text-white"
         >
           BOOK NOW
         </button>
       </div>
+
       <div className="border-t border-yellow-gold1 mt-12">
         <ContactUs />
       </div>

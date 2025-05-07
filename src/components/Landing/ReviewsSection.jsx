@@ -40,7 +40,7 @@ const ReviewsSection = () => {
     <section
       id="reviews"
       ref={ref}
-      className="relative min-h-screen z-22 flex flex-col items-center justify-center bg-green-ziti text-yellow-gold px-6 py-20"
+      className="relative min-h-screen border-t-1 border-yellow-gold z-22 flex flex-col items-center justify-center bg-green-ziti text-yellow-gold px-6 py-20"
     >
       {/* Decorative lines */}
       <div className="absolute z-10 top-0 left-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1 opacity-50"></div>

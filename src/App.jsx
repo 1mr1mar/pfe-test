@@ -1,6 +1,7 @@
-
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Landing from "./components/LandingPage";
 import "./App.css";
@@ -26,6 +27,7 @@ import Login from "./components/Login";
 import ReviewssPage from "./components/admin/ReviewsPage";
 import Sittings from "./components/admin/Sittings";
 
+import Chatbot from "./components/Chatbot";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -45,6 +47,7 @@ function App() {
         <Route path="/product/:id" element={<MealDetails />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<Checkout />} />
+        
 
         {/* Login */}
         <Route path="/admin/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
@@ -65,6 +68,11 @@ function App() {
           <Route path="sittings" element={<Sittings />} />
         </Route>
       </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="z-5000">
+        <Chatbot />
+      </div>
+      
     </Router>
   );  
 }

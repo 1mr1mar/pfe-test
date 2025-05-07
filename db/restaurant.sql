@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 05 mai 2025 à 16:20
+-- Généré le : mer. 07 mai 2025 à 03:42
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -126,6 +126,22 @@ CREATE TABLE `customers` (
   `table_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Déchargement des données de la table `customers`
+--
+
+INSERT INTO `customers` (`id`, `name`, `email`, `phone`, `address`, `reservation_id`, `table_id`) VALUES
+(1, 'Alice Johnson', 'alice.johnson@example.com', '555-1234', '123 Maple Street, Springfield', NULL, NULL),
+(2, 'Bob Smith', 'bob.smith@example.com', '555-5678', '456 Oak Avenue, Metropolis', NULL, NULL),
+(3, 'Clara Davis', 'clara.davis@example.com', '555-8765', '789 Pine Road, Gotham', NULL, NULL),
+(4, 'Daniel Lee', 'daniel.lee@example.com', '555-4321', '321 Birch Blvd, Star City', NULL, NULL),
+(5, 'Emily Clark', 'emily.clark@example.com', '555-6789', '147 Cedar Lane, Central City', NULL, NULL),
+(6, 'Frank Harris', 'frank.harris@example.com', '555-2468', '258 Aspen Drive, Coast City', NULL, NULL),
+(7, 'Grace Kim', 'grace.kim@example.com', '555-1357', '369 Willow Way, Hill Valley', NULL, NULL),
+(8, 'Henry Turner', 'henry.turner@example.com', '555-9753', '741 Elm Court, Riverdale', NULL, NULL),
+(9, 'Isabel Moore', 'isabel.moore@example.com', '555-3141', '852 Cherry Street, Smallville', NULL, NULL),
+(10, 'Jack Miller', 'jack.miller@example.com', '555-2460', '963 Poplar Place, Emerald City', NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -167,18 +183,18 @@ INSERT INTO `meals` (`id`, `name`, `description`, `price`, `category_id`, `pic`,
 (136, 'Fried Chicken', 'Crispy southern style chicken.', 10.99, 7, 'main-img-5.jpg', 16, 4.3, 145),
 (137, 'Eggplant Parmesan', 'Baked eggplant with marinara sauce.', 11.00, 13, 'pic22.jpg', 17, 4.2, 95),
 (138, 'Fish & Chips', 'Fried fish with crispy fries.', 10.50, 4, 'shop-img-1.jpg', 18, 4.3, 160),
-(139, 'Falafel Wrap', 'Chickpea balls in pita bread.', 8.99, 6, 'falafel_wrap.jpg', 19, 4.1, 100),
-(140, 'Steak Frites', 'Grilled steak with French fries.', 16.50, 9, 'steak_frites.jpg', 20, 4.6, 175),
-(141, 'Caprese Salad', 'Tomatoes, mozzarella and basil.', 9.50, 5, 'caprese_salad.jpg', 21, 4, 90),
-(142, 'Burrito Bowl', 'Mexican bowl with rice, beans and meat.', 10.75, 14, 'burrito_bowl.jpg', 22, 4.3, 130),
-(143, 'Ramen', 'Japanese noodle soup with pork.', 12.00, 10, 'ramen.jpg', 23, 4.4, 155),
-(144, 'Pancakes', 'Fluffy pancakes with maple syrup.', 7.99, 15, 'pancakes.jpg', 24, 4.2, 125),
-(145, 'Lobster Roll', 'Lobster meat in a toasted bun.', 18.99, 4, 'lobster_roll.jpg', 25, 4.8, 160),
-(146, 'Gnocchi', 'Potato dumplings with tomato sauce.', 11.50, 2, 'gnocchi.jpg', 26, 4.1, 80),
-(147, 'Crispy Duck', 'Roasted duck with crispy skin.', 16.00, 9, 'crispy_duck.jpg', 27, 4.7, 150),
-(148, 'Stuffed Peppers', 'Bell peppers filled with rice & meat.', 10.00, 13, 'stuffed_peppers.jpg', 28, 4.1, 95),
-(149, 'Chicken Alfredo', 'Pasta with creamy Alfredo sauce.', 12.25, 2, 'chicken_alfredo.jpg', 29, 4.5, 140),
-(150, 'Chocolate Lava Cake', 'Warm cake with gooey chocolate center.', 6.99, 15, 'lava_cake.jpg', 30, 4.9, 200);
+(139, 'Falafel Wrap', 'Chickpea balls in pita bread.', 8.99, 6, 'mar1.jpg', 19, 4.1, 100),
+(140, 'Steak Frites', 'Grilled steak with French fries.', 16.50, 9, 'mar2.jpg', 20, 4.6, 175),
+(141, 'Caprese Salad', 'Tomatoes, mozzarella and basil.', 9.50, 5, 'mar3.jpg', 21, 4, 90),
+(142, 'Burrito Bowl', 'Mexican bowl with rice, beans and meat.', 10.75, 14, 'mar5.jpg', 22, 4.3, 130),
+(143, 'Ramen', 'Japanese noodle soup with pork.', 12.00, 10, 'mar4.jpg', 23, 4.4, 155),
+(144, 'Pancakes', 'Fluffy pancakes with maple syrup.', 7.99, 15, 'mar6.jpg', 24, 4.2, 125),
+(145, 'Lobster Roll', 'Lobster meat in a toasted bun.', 18.99, 4, 'mar7.jpg', 25, 4.8, 160),
+(146, 'Gnocchi', 'Potato dumplings with tomato sauce.', 11.50, 2, 'mar8.jpg', 26, 4.1, 80),
+(147, 'Crispy Duck', 'Roasted duck with crispy skin.', 16.00, 9, 'mar9.jpg', 27, 4.7, 150),
+(148, 'Stuffed Peppers', 'Bell peppers filled with rice & meat.', 10.00, 13, 'mar10.jpg', 28, 4.1, 95),
+(149, 'Chicken Alfredo', 'Pasta with creamy Alfredo sauce.', 12.25, 2, 'mar11.jpg', 29, 4.5, 140),
+(150, 'Chocolate Lava Cake', 'Warm cake with gooey chocolate center.', 6.99, 15, 'mar12.jpg', 30, 4.9, 200);
 
 -- --------------------------------------------------------
 
@@ -190,7 +206,10 @@ CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `order_date` datetime NOT NULL,
-  `status` varchar(50) DEFAULT 'pending'
+  `status` varchar(50) DEFAULT 'pending',
+  `reservation_id` int(11) DEFAULT NULL,
+  `delivery_address` text DEFAULT NULL,
+  `total_price` decimal(10,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -216,8 +235,30 @@ CREATE TABLE `order_items` (
 CREATE TABLE `reservations` (
   `id` int(11) NOT NULL,
   `reservation_time` datetime NOT NULL,
-  `number_of_people` int(11) NOT NULL
+  `number_of_people` int(11) NOT NULL,
+  `table_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Déchargement des données de la table `reservations`
+--
+
+INSERT INTO `reservations` (`id`, `reservation_time`, `number_of_people`, `table_id`) VALUES
+(1, '2025-05-05 18:00:00', 2, 1),
+(2, '2025-05-05 19:00:00', 4, 2),
+(3, '2025-05-05 20:00:00', 4, 3),
+(4, '2025-05-06 18:30:00', 6, 4),
+(5, '2025-05-06 19:30:00', 8, 5),
+(6, '2025-05-06 20:30:00', 10, 6),
+(7, '2025-05-07 18:00:00', 2, 1),
+(8, '2025-05-07 19:00:00', 3, 2),
+(9, '2025-05-07 20:00:00', 5, 3),
+(10, '2025-05-08 18:30:00', 6, 4),
+(11, '2025-05-08 19:30:00', 8, 5),
+(12, '2025-05-08 20:30:00', 10, 6),
+(13, '2025-05-09 18:00:00', 2, NULL),
+(14, '2025-05-09 19:00:00', 3, NULL),
+(15, '2025-05-09 20:00:00', 5, NULL);
 
 -- --------------------------------------------------------
 
@@ -230,6 +271,18 @@ CREATE TABLE `tables` (
   `table_number` int(11) NOT NULL,
   `capacity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Déchargement des données de la table `tables`
+--
+
+INSERT INTO `tables` (`id`, `table_number`, `capacity`) VALUES
+(1, 1, 2),
+(2, 2, 4),
+(3, 3, 4),
+(4, 4, 6),
+(5, 5, 8),
+(6, 6, 10);
 
 --
 -- Index pour les tables déchargées
@@ -269,7 +322,8 @@ ALTER TABLE `meals`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `customer_id` (`customer_id`);
+  ADD KEY `customer_id` (`customer_id`),
+  ADD KEY `reservation_id` (`reservation_id`);
 
 --
 -- Index pour la table `order_items`
@@ -283,7 +337,8 @@ ALTER TABLE `order_items`
 -- Index pour la table `reservations`
 --
 ALTER TABLE `reservations`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `table_id` (`table_id`);
 
 --
 -- Index pour la table `tables`
@@ -311,7 +366,7 @@ ALTER TABLE `chefs`
 -- AUTO_INCREMENT pour la table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `meals`
@@ -323,25 +378,25 @@ ALTER TABLE `meals`
 -- AUTO_INCREMENT pour la table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT pour la table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT pour la table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT pour la table `tables`
 --
 ALTER TABLE `tables`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Contraintes pour les tables déchargées
@@ -365,7 +420,8 @@ ALTER TABLE `meals`
 -- Contraintes pour la table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `order_items`
@@ -373,6 +429,12 @@ ALTER TABLE `orders`
 ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`meal_id`) REFERENCES `meals` (`id`) ON DELETE SET NULL;
+
+--
+-- Contraintes pour la table `reservations`
+--
+ALTER TABLE `reservations`
+  ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

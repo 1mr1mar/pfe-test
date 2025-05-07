@@ -1,95 +1,226 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Svg from "./svgn2";
-import { Link } from "react-router-dom";
+import SvgI from "./svgn4";
+import { Calendar, Clock, Users, Phone, Mail, MapPin } from "lucide-react";
 
 const Booking = () => {
-  const [formData, setFormData] = useState({
-    guests: 1,
-    date: "",
-    time: "",
+  const { ref, inView } = useInView({
+    triggerOnce: false,
+    threshold: 0.2,
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    date: "",
+    time: "",
+    guests: "2",
+    message: "",
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Booking Details:", formData);
-    alert("Booking submitted successfully!");
+    // Handle form submission
+    console.log(formData);
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const contactInfo = [
+    {
+      icon: Phone,
+      title: "Phone",
+      value: "+1 (555) 123-4567",
+    },
+    {
+      icon: Mail,
+      title: "Email",
+      value: "reservations@restaurant.com",
+    },
+    {
+      icon: MapPin,
+      title: "Location",
+      value: "123 Gourmet Street, Foodville",
+    },
+  ];
+
   return (
-    <section className="flex justify-center items-center p-50 bg-green-ziti">
-      <motion.div
-        className="w-full max-w-4xl p-5"
-        initial={{ opacity: 0, y: -50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 1 }}
+    <section
+      id="booking"
+      ref={ref}
+      className="relative min-h-screen z-22 flex flex-col items-center justify-center bg-green-ziti text-yellow-gold px-6 py-20"
+    >
+      {/* Decorative lines */}
+      <div className="absolute z-10 top-0 left-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1 opacity-50"></div>
+      <div className="absolute z-10 top-0 left-[calc(8/20*100%)] h-full w-[1px] bg-yellow-gold1 opacity-50"></div>
+      <div className="absolute z-10 top-0 right-[calc(8/20*100%)] h-full w-[1px] bg-yellow-gold1 opacity-50"></div>
+      <div className="absolute z-10 top-0 right-[calc(4/18*100%)] h-full w-[1px] bg-yellow-gold1 opacity-50"></div>
+
+      {/* Header */}
+      <motion.p
+        className="jdid text-lg uppercase z-20 text-yellow-gold tracking-wider mb-2"
+        initial={{ opacity: 0, y: 50 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
       >
-        <p className="jdid text-yellow-gold text-2xl ml-75">Reservations</p>
-        <motion.h2
-          className="text-center text-yellow-gold text-5xl flex items-center ml-40 gap-4 tracking-widest mb-6"
-          style={{ fontFamily: "font1, sans-serif" }}
-          initial={{ opacity: 0, y: -100 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <Svg />
-          BOOK A TABLE
-          <Svg />
-        </motion.h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-4 gap-12">
-          <div className="col-span-1">
-            <select
-              name="guests"
-              required
-              className="p-6 border-2 border-yellow-gold1 bg-transparent text-yellow-gold placeholder-yellow-gold1 text-lg w-full"
+        Make a Reservation
+      </motion.p>
+
+      <motion.h1
+        className="text-5xl flex z-20 gap-x-4 items-center md:text-6xl mb-12"
+        style={{ fontFamily: "font1, sans-serif" }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
+      >
+        <Svg />
+        Book a Table
+        <Svg />
+      </motion.h1>
+
+      {/* Contact Info */}
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 w-full max-w-4xl z-20"
+        initial={{ opacity: 0, y: 30 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 1, ease: "easeOut", delay: 0.6 }}
+      >
+        {contactInfo.map((info, index) => (
+          <motion.div
+            key={index}
+            className="flex flex-col items-center p-6 bg-green-khzy/30 backdrop-blur-sm rounded-lg border border-yellow-gold/20"
+            whileHover={{ scale: 1.05, backgroundColor: "rgba(154, 125, 87, 0.1)" }}
+            transition={{ duration: 0.3 }}
+          >
+            <info.icon className="w-8 h-8 text-yellow-gold mb-3" />
+            <h3 className="text-lg font-semibold text-yellow-gold mb-2">{info.title}</h3>
+            <p className="text-gray-300 text-center">{info.value}</p>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Booking Form */}
+      <motion.div
+        className="w-full max-w-4xl z-20"
+        initial={{ opacity: 0, y: 30 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 1, ease: "easeOut", delay: 0.8 }}
+      >
+        <form onSubmit={handleSubmit} className="bg-green-khzy/30 backdrop-blur-sm p-8 rounded-lg border border-yellow-gold/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-yellow-gold mb-2">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-black/30 border border-yellow-gold/30 rounded-lg text-white focus:outline-none focus:border-yellow-gold transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-yellow-gold mb-2">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-black/30 border border-yellow-gold/30 rounded-lg text-white focus:outline-none focus:border-yellow-gold transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-yellow-gold mb-2">Phone</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-black/30 border border-yellow-gold/30 rounded-lg text-white focus:outline-none focus:border-yellow-gold transition-colors"
+                  required
+                />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-yellow-gold mb-2">Date</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-black/30 border border-yellow-gold/30 rounded-lg text-white focus:outline-none focus:border-yellow-gold transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-yellow-gold mb-2">Time</label>
+                <input
+                  type="time"
+                  name="time"
+                  value={formData.time}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-black/30 border border-yellow-gold/30 rounded-lg text-white focus:outline-none focus:border-yellow-gold transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-yellow-gold mb-2">Number of Guests</label>
+                <select
+                  name="guests"
+                  value={formData.guests}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-black/30 border border-yellow-gold/30 rounded-lg text-white focus:outline-none focus:border-yellow-gold transition-colors"
+                  required
+                >
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <option key={num} value={num}>
+                      {num} {num === 1 ? "Person" : "People"}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6">
+            <label className="block text-yellow-gold mb-2">Special Requests</label>
+            <textarea
+              name="message"
+              value={formData.message}
               onChange={handleChange}
-            >
-              <option value="1">1 Person</option>
-              <option value="2">2 People</option>
-              <option value="3">3 People</option>
-              <option value="4">4 People</option>
-              <option value="4">5 People</option>
-              <option value="4">6 People</option>
-              <option value="4">7 People</option>
-              <option value="4">8 People</option>
-              <option value="4">9 People</option>
-              <option value="4">10 People</option>
-            </select>
+              className="w-full px-4 py-3 bg-black/30 border border-yellow-gold/30 rounded-lg text-white focus:outline-none focus:border-yellow-gold transition-colors h-32"
+              placeholder="Any special requests or dietary requirements?"
+            ></textarea>
           </div>
-          <div className="col-span-1">
-            <input
-              type="date"
-              name="date"
-              required
-              className="p-6 border-2 border-yellow-gold1 bg-transparent text-yellow-gold1 placeholder-yellow-gold1 text-lg w-full"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-span-1">
-            <input
-              type="time"
-              name="time"
-              required
-              className="p-6 border-2 border-yellow-gold1 bg-transparent text-yellow-gold1 placeholder-yellow-gold1 text-lg w-full"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-span-1">
-          <Link to="/book ">
-            <button
-              type="submit"
-              className="p-6 border-2 border-yellow-gold1 text-yellow-gold bg-transparent hover:bg-yellow-gold1 hover:text-black w-full text-lg"
-            >
-              BOOK NOW
-            </button>
-          </Link>
-          </div>
+          <motion.button
+            type="submit"
+            whileHover={{ scale: 1.05, backgroundColor: "#ffcc00" }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full mt-8 text-yellow-gold px-8 py-4 border-2 border-yellow-gold text-lg font-medium transition duration-300 shadow-lg hover:shadow-yellow-gold/30 flex items-center justify-center"
+          >
+            Book Now
+          </motion.button>
         </form>
+      </motion.div>
+
+      {/* Decorative SVG */}
+      <motion.div
+        className="absolute bottom-0 left-0 z-10"
+        initial={{ opacity: 0, x: -50 }}
+        animate={inView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 1, ease: "easeOut", delay: 1 }}
+      >
+        <SvgI />
       </motion.div>
     </section>
   );

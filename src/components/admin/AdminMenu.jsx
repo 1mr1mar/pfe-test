@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { productsData } from "../data/products";
 import {
   FaPlus,
   FaPencilAlt,
@@ -8,300 +7,398 @@ import {
   FaTimes,
   FaSearch,
   FaFilter,
+  FaSort,
+  FaImage,
+  FaStar,
+  FaChartLine,
+  FaUtensils,
+  FaDollarSign,
 } from "react-icons/fa";
+import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify";
 
 const AdminMenu = () => {
-  const [products, setProducts] = useState(productsData);
-  const [filteredProducts, setFilteredProducts] = useState(productsData);
+  const [meals, setMeals] = useState([]);
+  const [filteredMeals, setFilteredMeals] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [filterCategory, setFilterCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
-  const [newProduct, setNewProduct] = useState({
-    name: "",
-    category: "",
-    price: "",
-    description: "",
-    image: "",
-  });
-  const [editProductId, setEditProductId] = useState(null);
+  const [sortOption, setSortOption] = useState("name");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editMealId, setEditMealId] = useState(null);
+  const [editMeal, setEditMeal] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [animateDelete, setAnimateDelete] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalMeals: 0,
+    averagePrice: 0,
+    highestRated: null,
+    mostPopular: null,
+  });
+
+  const [newMeal, setNewMeal] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category_id: "",
+    pic: "",
+    chef_id: "",
+    rating: "",
+    popularity: "",
+  });
 
   // Ref for add form animation
   const addFormRef = useRef(null);
 
-  // Categories list from products data
-  const categories = ["All", ...new Set(products.map((p) => p.category))];
+  // Fetch meals and categories on component mount
+  useEffect(() => {
+    fetchMeals();
+    fetchCategories();
+  }, []);
+
+  const fetchMeals = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get("http://localhost:5000/api/meals");
+      console.log('Fetched meals:', response.data.slice(0, 3)); // Log first 3 meals
+      
+      // Add the correct path to the image URLs
+      const mealsWithImages = response.data.map(meal => {
+        // Use the exact path from the database
+        const picPath = `/pic/${meal.pic}`;
+        console.log('Processing meal:', {
+          name: meal.name,
+          originalPic: meal.pic,
+          newPicPath: picPath
+        });
+        return {
+          ...meal,
+          pic: picPath
+        };
+      });
+      setMeals(mealsWithImages);
+      setFilteredMeals(mealsWithImages);
+      calculateStats(mealsWithImages);
+    } catch (error) {
+      console.error("Error fetching meals:", error);
+      toast.error("Failed to fetch meals");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast.error("Failed to fetch categories");
+    }
+  };
+
+  const calculateStats = (mealsData) => {
+    const totalMeals = mealsData.length;
+    const averagePrice = mealsData.reduce((acc, meal) => acc + meal.price, 0) / totalMeals;
+    const highestRated = [...mealsData].sort((a, b) => b.rating - a.rating)[0];
+    const mostPopular = [...mealsData].sort((a, b) => b.popularity - a.popularity)[0];
+
+    setStats({
+      totalMeals,
+      averagePrice,
+      highestRated,
+      mostPopular,
+    });
+  };
 
   useEffect(() => {
-    let result = [...products];
+    let result = [...meals];
 
     // Apply category filter
     if (filterCategory !== "All") {
-      result = result.filter((p) => p.category === filterCategory);
+      const categoryId = categories.find(cat => cat.name === filterCategory)?.id;
+      result = result.filter(meal => meal.category_id === categoryId);
     }
 
     // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(term) ||
-          p.description.toLowerCase().includes(term)
+        meal =>
+          meal.name.toLowerCase().includes(term) ||
+          meal.description.toLowerCase().includes(term)
       );
     }
 
-    setFilteredProducts(result);
-  }, [products, filterCategory, searchTerm]);
-
-  // For the add form animation
-  useEffect(() => {
-    if (showAddForm && addFormRef.current) {
-      addFormRef.current.classList.remove("opacity-0", "scale-95");
-      addFormRef.current.classList.add("opacity-100", "scale-100");
+    // Apply sorting
+    switch (sortOption) {
+      case "name":
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "price-asc":
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        result.sort((a, b) => b.rating - a.rating);
+        break;
+      case "popularity":
+        result.sort((a, b) => b.popularity - a.popularity);
+        break;
+      default:
+        break;
     }
-  }, [showAddForm]);
 
-  const validateForm = (product) => {
+    setFilteredMeals(result);
+  }, [meals, filterCategory, searchTerm, sortOption, categories]);
+
+  const validateForm = (meal) => {
     const errors = {};
-
-    if (!product.name.trim()) errors.name = "Name is required";
-    if (!product.category) errors.category = "Category is required";
-    if (!product.price) errors.price = "Price is required";
-    else if (isNaN(product.price) || Number(product.price) <= 0)
-      errors.price = "Price must be a positive number";
-    if (!product.description.trim())
-      errors.description = "Description is required";
-
+    if (!meal.name) errors.name = "Name is required";
+    if (!meal.description) errors.description = "Description is required";
+    if (!meal.price || meal.price <= 0) errors.price = "Valid price is required";
+    if (!meal.category_id) errors.category_id = "Category is required";
+    if (!meal.chef_id) errors.chef_id = "Chef is required";
     return errors;
   };
 
-  const handleImageChange = (e, isEdit = false) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validate file type
-    const validTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (!validTypes.includes(file.type)) {
-      alert("Please select a valid image file (JPEG, PNG, or GIF)");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (isEdit) {
-        setProducts((prev) =>
-          prev.map((p) =>
-            p.id === editProductId ? { ...p, image: reader.result } : p
-          )
-        );
-      } else {
-        setNewProduct({ ...newProduct, image: reader.result });
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleAddProduct = () => {
-    const errors = validateForm(newProduct);
-
+  const handleAddMeal = async (e) => {
+    e.preventDefault();
+    const errors = validateForm(newMeal);
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
 
-    const newId = Math.max(...products.map((p) => p.id), 0) + 1;
-    const productToAdd = {
-      ...newProduct,
-      id: newId,
-      price: Number(newProduct.price).toFixed(2),
-    };
+    try {
+      // Convert chef_id to made_by for the backend
+      const mealData = {
+        ...newMeal,
+        made_by: newMeal.chef_id,
+        rating: newMeal.rating || 0,
+        popularity: newMeal.popularity || 0
+      };
+      delete mealData.chef_id;
 
-    setProducts([...products, productToAdd]);
-
-    // Reset form
-    setNewProduct({
-      name: "",
-      category: "",
-      price: "",
-      description: "",
-      image: "",
-    });
-    setFormErrors({});
-
-    // Animate form closure
-    if (addFormRef.current) {
-      addFormRef.current.classList.remove("opacity-100", "scale-100");
-      addFormRef.current.classList.add("opacity-0", "scale-95");
-      setTimeout(() => setShowAddForm(false), 300);
-    } else {
+      const response = await axios.post("http://localhost:5000/api/meals", mealData);
+      const newMealWithImage = {
+        ...response.data,
+        pic: `/pic/${response.data.pic}` // The backend returns just the filename
+      };
+      setMeals([...meals, newMealWithImage]);
+      toast.success("Meal added successfully");
       setShowAddForm(false);
+      setNewMeal({
+        name: "",
+        description: "",
+        price: "",
+        category_id: "",
+        pic: "",
+        chef_id: "",
+        rating: "",
+        popularity: "",
+      });
+    } catch (error) {
+      console.error("Error adding meal:", error);
+      toast.error("Failed to add meal");
     }
   };
 
-  const handleUpdateProduct = (id) => {
-    const productToUpdate = products.find((p) => p.id === id);
-    const errors = validateForm(productToUpdate);
+  const handleEditClick = (meal) => {
+    setEditMealId(meal.id);
+    setEditMeal({
+      ...meal,
+      chef_id: meal.made_by // Convert made_by to chef_id for the form
+    });
+  };
 
+  const handleUpdateMeal = async (e) => {
+    e.preventDefault();
+    console.log('Starting meal update...');
+    
+    const errors = validateForm(editMeal);
     if (Object.keys(errors).length > 0) {
+      console.log('Form validation errors:', errors);
       setFormErrors(errors);
       return;
     }
 
-    setProducts(
-      products.map((p) =>
-        p.id === id ? { ...p, price: Number(p.price).toFixed(2) } : p
-      )
-    );
-    setEditProductId(null);
-    setFormErrors({});
-  };
+    try {
+      // Convert chef_id to made_by for the backend
+      const mealData = {
+        ...editMeal,
+        made_by: editMeal.chef_id,
+        rating: editMeal.rating || 0,
+        popularity: editMeal.popularity || 0
+      };
+      delete mealData.chef_id;
 
-  const handleDeleteProduct = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      // Start delete animation
-      setAnimateDelete(id);
+      console.log('Sending update request:', {
+        url: `http://localhost:5000/api/meals/${editMealId}`,
+        data: mealData
+      });
 
-      // Actual deletion after animation completes
-      setTimeout(() => {
-        setProducts(products.filter((p) => p.id !== id));
-        setAnimateDelete(null);
-      }, 500);
+      const response = await axios.put(`http://localhost:5000/api/meals/${editMealId}`, mealData);
+      console.log('Update response:', response.data);
+
+      // Update the meals list with the new data
+      setMeals(prevMeals => {
+        const updatedMeals = prevMeals.map(m => {
+          if (m.id === editMealId) {
+            console.log('Updating meal in state:', {
+              old: m,
+              new: {
+                ...editMeal,
+                pic: `/pic/${editMeal.pic}`
+              }
+            });
+            return {
+              ...editMeal,
+              pic: `/pic/${editMeal.pic}`
+            };
+          }
+          return m;
+        });
+        console.log('Updated meals state:', updatedMeals);
+        return updatedMeals;
+      });
+
+      toast.success("Meal updated successfully");
+      setEditMealId(null);
+      setEditMeal(null);
+    } catch (error) {
+      console.error("Error updating meal:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      toast.error(error.response?.data?.message || "Failed to update meal");
     }
   };
 
-  const toggleAddForm = () => {
-    if (showAddForm) {
-      // Animate closing
-      if (addFormRef.current) {
-        addFormRef.current.classList.remove("opacity-100", "scale-100");
-        addFormRef.current.classList.add("opacity-0", "scale-95");
-        setTimeout(() => setShowAddForm(false), 300);
-      } else {
-        setShowAddForm(false);
+  const handleDeleteMeal = async (id) => {
+    if (window.confirm("Are you sure you want to delete this meal?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/meals/${id}`);
+        setMeals(meals.filter(m => m.id !== id));
+        toast.success("Meal deleted successfully");
+      } catch (error) {
+        console.error("Error deleting meal:", error);
+        toast.error("Failed to delete meal");
       }
-    } else {
-      setShowAddForm(true);
     }
   };
 
-  // Form component to reduce duplication
-  const ProductForm = ({ product, isEdit, onChange, onFileChange }) => (
-    <div className="max-w-md mx-auto p-6 bg-green-ziti rounded-lg shadow-lg">
-      {" "}
-      <div className="mb-2">
-        <input
-          type="text"
-          placeholder="Name"
-          value={product.name}
-          onChange={(e) => onChange("name", e.target.value)}
-          className={`w-full p-2 bg-transparent text-white border ${
-            formErrors.name ? "border-red-500" : "border-yellow-gold"
-          } rounded transition-all duration-200 focus:ring-2 focus:ring-yellow-gold1 focus:border-transparent`}
-        />
-        {formErrors.name && (
-          <p className="text-red-500 text-sm mt-1 animate-fadeIn">
-            {formErrors.name}
-          </p>
-        )}
-      </div>
-      <div className="mb-2">
-        <select
-          value={product.category}
-          onChange={(e) => onChange("category", e.target.value)}
-          className={`w-full p-2 bg-transparent text-yellow-gold border ${
-            formErrors.category ? "border-red-500" : "border-yellow-gold"
-          } rounded transition-all duration-200 focus:ring-2 focus:ring-yellow-gold1 focus:border-transparent`}
-        >
-          <option value="">Select Category</option>
-          {categories
-            .filter((c) => c !== "All")
-            .map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-        </select>
-        {formErrors.category && (
-          <p className="text-red-500 text-sm mt-1 animate-fadeIn">
-            {formErrors.category}
-          </p>
-        )}
-      </div>
-      <div className="mb-2">
-        <input
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="Price"
-          value={product.price}
-          onChange={(e) => onChange("price", e.target.value)}
-          className={`w-full p-2 bg-transparent text-white border ${
-            formErrors.price ? "border-red-500" : "border-yellow-gold"
-          } rounded transition-all duration-200 focus:ring-2 focus:ring-yellow-gold1 focus:border-transparent`}
-        />
-        {formErrors.price && (
-          <p className="text-red-500 text-sm mt-1 animate-fadeIn">
-            {formErrors.price}
-          </p>
-        )}
-      </div>
-      <div className="mb-2">
-        <textarea
-          placeholder="Description"
-          value={product.description}
-          onChange={(e) => onChange("description", e.target.value)}
-          className={`w-full p-2 bg-transparent text-white border ${
-            formErrors.description ? "border-red-500" : "border-yellow-gold"
-          } rounded h-20 transition-all duration-200 focus:ring-2 focus:ring-yellow-gold1 focus:border-transparent`}
-        />
-        {formErrors.description && (
-          <p className="text-red-500 text-sm mt-1 animate-fadeIn">
-            {formErrors.description}
-          </p>
-        )}
-      </div>
-      <div className="mb-2">
-        <label className="block text-yellow-gold mb-1">Product Image</label>
-        <input
-          type="file"
-          onChange={onFileChange}
-          className="w-full border border-yellow-gold rounded p-2 text-white transition-all duration-200 hover:bg-green-800"
-          accept="image/jpeg, image/png, image/gif"
-        />
-      </div>
-    </div>
-  );
+  const handleImageUpload = async (e, isEdit = false) => {
+    const file = e.target.files[0];
+    if (!file) {
+      toast.error('Please select a file');
+      return;
+    }
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size should be less than 5MB');
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    try {
+      // Create FormData to send the file
+      const formData = new FormData();
+      formData.append('image', file);
+
+      console.log('Uploading file:', {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      });
+
+      // Upload the image file
+      const response = await axios.post('http://localhost:5000/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      // Get the filename from the response
+      const filename = response.data.filename;
+      console.log('Upload successful:', filename);
+
+      if (isEdit) {
+        setEditMeal(prev => ({
+          ...prev,
+          pic: filename
+        }));
+      } else {
+        setNewMeal(prev => ({
+          ...prev,
+          pic: filename
+        }));
+      }
+      toast.success('Image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      const errorMessage = error.response?.data?.error || error.message || 'Failed to upload image';
+      toast.error(`Upload failed: ${errorMessage}`);
+    }
+  };
 
   return (
     <div className="p-6 bg-green-khzy">
-      {/* Header with Floating Effect */}
-      <h1
-        className="text-3xl text-yellow-gold1 mb-6 font-bold relative inline-block hover:scale-105 transition-transform duration-300"
-        style={{ fontFamily: "font1, sans-serif" }}
-      >
-        Menu Management
-        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-gold1 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-bottom-left"></span>
-      </h1>
+      {/* Header with Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <StatCard
+          icon={<FaUtensils />}
+          label="Total Meals"
+          value={stats.totalMeals}
+        />
+        <StatCard
+          icon={<FaDollarSign />}
+          label="Average Price"
+          value={`$${stats.averagePrice.toFixed(2)}`}
+        />
+        <StatCard
+          icon={<FaStar />}
+          label="Highest Rated"
+          value={stats.highestRated?.name || "N/A"}
+          subValue={`${stats.highestRated?.rating || 0} stars`}
+        />
+        <StatCard
+          icon={<FaChartLine />}
+          label="Most Popular"
+          value={stats.mostPopular?.name || "N/A"}
+          subValue={`${stats.mostPopular?.popularity || 0} orders`}
+        />
+      </div>
 
-      {/* Controls Section with Animations */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 transition-all duration-300 ease-in-out">
+      {/* Controls Section */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
         <div className="flex flex-col md:flex-row gap-4 w-full">
-          {/* Search Input with Animation */}
+          {/* Search Input */}
           <div className="relative group w-full md:w-auto">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
               <FaSearch className="text-yellow-gold1 group-hover:text-yellow-500 transition-colors duration-300" />
             </div>
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search meals..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 p-2 bg-transparent text-white border border-yellow-gold rounded w-full transition-all duration-300 focus:ring-2 focus:ring-yellow-gold1 focus:border-transparent hover:border-yellow-500"
             />
           </div>
 
-          {/* Category Filter with Animation */}
+          {/* Category Filter */}
           <div className="relative group w-full md:w-auto">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
               <FaFilter className="text-yellow-gold1 group-hover:text-yellow-500 transition-colors duration-300" />
@@ -311,186 +408,356 @@ const AdminMenu = () => {
               onChange={(e) => setFilterCategory(e.target.value)}
               className="pl-10 p-2 bg-transparent text-yellow-gold border border-yellow-gold rounded w-full transition-all duration-300 focus:ring-2 focus:ring-yellow-gold1 focus:border-transparent hover:border-yellow-500"
             >
+              <option value="All">All Categories</option>
               {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
+                <option key={category.id} value={category.name}>
+                  {category.name}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Add Product Button with Animation */}
+          {/* Sort Options */}
+          <div className="relative group w-full md:w-auto">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <FaSort className="text-yellow-gold1 group-hover:text-yellow-500 transition-colors duration-300" />
+            </div>
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="pl-10 p-2 bg-transparent text-yellow-gold border border-yellow-gold rounded w-full transition-all duration-300 focus:ring-2 focus:ring-yellow-gold1 focus:border-transparent hover:border-yellow-500"
+            >
+              <option value="name">Sort by Name</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Highest Rated</option>
+              <option value="popularity">Most Popular</option>
+            </select>
+          </div>
+
+          {/* Add Meal Button */}
           <button
-            onClick={toggleAddForm}
+            onClick={() => setShowAddForm(true)}
             className="flex items-center justify-center bg-yellow-gold1 text-green-ziti px-4 py-2 rounded-md transform hover:scale-105 hover:bg-yellow-500 transition-all duration-300 shadow hover:shadow-lg"
           >
-            <FaPlus
-              className={`mr-2 transition-transform duration-300 ${
-                showAddForm ? "rotate-45" : "rotate-0"
-              }`}
-            />
-            {showAddForm ? "Cancel" : "Add Product"}
+            <FaPlus className="mr-2" />
+            Add Meal
           </button>
         </div>
       </div>
 
-      {/* Add Product Form with Animation */}
-      {showAddForm && (
-        <div
-          ref={addFormRef}
-          className="bg-green-ziti border border-yellow-gold1 p-4 rounded-lg shadow-lg mb-6 transform opacity-0 scale-95 transition-all duration-300 ease-out"
-        >
-          <h2 className="text-xl text-yellow-gold1 mb-4 font-bold flex items-center">
-            <FaPlus className="mr-2 animate-pulse" /> Add New Product
-          </h2>
-
-          <ProductForm
-            product={newProduct}
-            isEdit={false}
-            onChange={(field, value) =>
-              setNewProduct({ ...newProduct, [field]: value })
-            }
-            onFileChange={handleImageChange}
-          />
-
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={() => {
-                if (addFormRef.current) {
-                  addFormRef.current.classList.remove(
-                    "opacity-100",
-                    "scale-100"
-                  );
-                  addFormRef.current.classList.add("opacity-0", "scale-95");
-                  setTimeout(() => {
-                    setShowAddForm(false);
-                    setFormErrors({});
-                  }, 300);
-                } else {
-                  setShowAddForm(false);
-                  setFormErrors({});
-                }
-              }}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 flex items-center"
-            >
-              <FaTimes className="mr-2" /> Cancel
-            </button>
-            <button
-              onClick={handleAddProduct}
-              className="bg-yellow-gold1 text-green-ziti px-4 py-2 rounded-md hover:bg-yellow-500 transition-all duration-300 transform hover:scale-105 flex items-center"
-            >
-              <FaSave className="mr-2" /> Add Product
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Products Grid with Animations */}
-      {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className={`h-full flex flex-col justify-between bg-green-ziti border border-yellow-gold1 p-4 rounded-lg shadow-lg transition-all duration-500 transform hover:shadow-2xl 
-              hover:scale-[1.02] ${
-                animateDelete === product.id
-                  ? "scale-0 opacity-0 rotate-12"
-                  : "scale-100 opacity-100 rotate-0 hover:scale-[1.02]"
-              }`}
-            >
-              {editProductId === product.id ? (
-                <>
-                  <h3 className="text-xl text-yellow-gold1 mb-4 font-bold flex items-center">
-                    <FaPencilAlt className="mr-2 animate-bounce" /> Edit Product
-                  </h3>
-
-                  <ProductForm
-                    product={product}
-                    isEdit={true}
-                    onChange={(field, value) => {
-                      setProducts((prev) =>
-                        prev.map((p) =>
-                          p.id === product.id ? { ...p, [field]: value } : p
-                        )
-                      );
-                    }}
-                    onFileChange={(e) => handleImageChange(e, true)}
-                  />
-
-                  <div className="flex justify-end mt-4">
-                    <button
-                      onClick={() => {
-                        setEditProductId(null);
-                        setFormErrors({});
-                      }}
-                      className="bg-gray-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 flex items-center"
-                    >
-                      <FaTimes className="mr-2" /> Cancel
-                    </button>
-                    <button
-                      onClick={() => handleUpdateProduct(product.id)}
-                      className="bg-yellow-gold1 text-green-ziti px-4 py-2 rounded-md hover:bg-yellow-500 transition-all duration-300 transform hover:scale-105 flex items-center"
-                    >
-                      <FaSave className="mr-2" /> Save
-                    </button>
+      {/* Add/Edit Form */}
+      <AnimatePresence>
+        {showAddForm && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <div className="bg-green-ziti p-6 rounded-lg w-full max-w-2xl">
+              <h2 className="text-2xl text-yellow-gold1 mb-4">Add New Meal</h2>
+              <form onSubmit={handleAddMeal} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-yellow-gold1 mb-2">Name</label>
+                    <input
+                      type="text"
+                      value={newMeal.name}
+                      onChange={(e) => setNewMeal({ ...newMeal, name: e.target.value })}
+                      className="w-full p-2 bg-transparent text-white border border-yellow-gold rounded"
+                    />
+                    {formErrors.name && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
+                    )}
                   </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl text-yellow-gold1 font-bold group-hover:text-yellow-500 transition-colors duration-300">
-                        {product.name}
-                      </h3>
-                      <p className="text-gray-300 text-sm">
-                        {product.category}
-                      </p>
-                    </div>
-                    <p className="text-yellow-gold1 font-bold text-lg transition-all duration-300 hover:scale-110">
-                      ${parseFloat(product.price).toFixed(2)}
-                    </p>
+                  <div>
+                    <label className="block text-yellow-gold1 mb-2">Price</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={newMeal.price}
+                      onChange={(e) => setNewMeal({ ...newMeal, price: e.target.value })}
+                      className="w-full p-2 bg-transparent text-white border border-yellow-gold rounded"
+                    />
+                    {formErrors.price && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.price}</p>
+                    )}
                   </div>
-
-                  {product.image && (
-                    <div className="overflow-hidden rounded my-3">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-100 object-cover transition-transform duration-700 hover:scale-110"
+                  <div>
+                    <label className="block text-yellow-gold1 mb-2">Category</label>
+                    <select
+                      value={newMeal.category_id}
+                      onChange={(e) => setNewMeal({ ...newMeal, category_id: e.target.value })}
+                      className="w-full p-2 bg-transparent text-white border border-yellow-gold rounded"
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                    {formErrors.category_id && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.category_id}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-yellow-gold1 mb-2">Image</label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e)}
+                        className="hidden"
+                        id="image-upload"
                       />
+                      <label
+                        htmlFor="image-upload"
+                        className="flex items-center justify-center p-2 bg-yellow-gold1 text-green-ziti rounded cursor-pointer hover:bg-yellow-500 transition-colors duration-300"
+                      >
+                        <FaImage className="mr-2" />
+                        Upload Image
+                      </label>
+                      {newMeal.pic && (
+                        <span className="text-yellow-gold1">Image uploaded</span>
+                      )}
                     </div>
-                  )}
-
-                  <p className="text-gray-300 mb-4">{product.description}</p>
-
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => setEditProductId(product.id)}
-                      className="bg-yellow-gold1 text-green-ziti px-3 py-1 rounded-md hover:bg-yellow-500 transition-all duration-300 transform hover:scale-110 flex items-center"
-                    >
-                      <FaPencilAlt className="mr-1" /> Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteProduct(product.id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition-all duration-300 transform hover:scale-110 flex items-center"
-                    >
-                      <FaTrash className="mr-1" /> Delete
-                    </button>
                   </div>
-                </>
-              )}
+                </div>
+                <div>
+                  <label className="block text-yellow-gold1 mb-2">Description</label>
+                  <textarea
+                    value={newMeal.description}
+                    onChange={(e) => setNewMeal({ ...newMeal, description: e.target.value })}
+                    className="w-full p-2 bg-transparent text-white border border-yellow-gold rounded"
+                    rows="3"
+                  />
+                  {formErrors.description && (
+                    <p className="text-red-500 text-sm mt-1">{formErrors.description}</p>
+                  )}
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddForm(false)}
+                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors duration-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-yellow-gold1 text-green-ziti rounded hover:bg-yellow-500 transition-colors duration-300"
+                  >
+                    Add Meal
+                  </button>
+                </div>
+              </form>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Form */}
+      <AnimatePresence>
+        {editMealId && editMeal && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <div className="bg-green-ziti p-6 rounded-lg w-full max-w-2xl">
+              <h2 className="text-2xl text-yellow-gold1 mb-4">Edit Meal</h2>
+              <form onSubmit={handleUpdateMeal} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-yellow-gold1 mb-2">Name</label>
+                    <input
+                      type="text"
+                      value={editMeal.name}
+                      onChange={(e) => setEditMeal({ ...editMeal, name: e.target.value })}
+                      className="w-full p-2 bg-transparent text-white border border-yellow-gold rounded"
+                    />
+                    {formErrors.name && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-yellow-gold1 mb-2">Price</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editMeal.price}
+                      onChange={(e) => setEditMeal({ ...editMeal, price: e.target.value })}
+                      className="w-full p-2 bg-transparent text-white border border-yellow-gold rounded"
+                    />
+                    {formErrors.price && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.price}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-yellow-gold1 mb-2">Category</label>
+                    <select
+                      value={editMeal.category_id}
+                      onChange={(e) => setEditMeal({ ...editMeal, category_id: e.target.value })}
+                      className="w-full p-2 bg-transparent text-white border border-yellow-gold rounded"
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                    {formErrors.category_id && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.category_id}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-yellow-gold1 mb-2">Image</label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, true)}
+                        className="hidden"
+                        id="edit-image-upload"
+                      />
+                      <label
+                        htmlFor="edit-image-upload"
+                        className="flex items-center justify-center p-2 bg-yellow-gold1 text-green-ziti rounded cursor-pointer hover:bg-yellow-500 transition-colors duration-300"
+                      >
+                        <FaImage className="mr-2" />
+                        Change Image
+                      </label>
+                      {editMeal.pic && (
+                        <span className="text-yellow-gold1">Image selected</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-yellow-gold1 mb-2">Description</label>
+                  <textarea
+                    value={editMeal.description}
+                    onChange={(e) => setEditMeal({ ...editMeal, description: e.target.value })}
+                    className="w-full p-2 bg-transparent text-white border border-yellow-gold rounded"
+                    rows="3"
+                  />
+                  {formErrors.description && (
+                    <p className="text-red-500 text-sm mt-1">{formErrors.description}</p>
+                  )}
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditMealId(null);
+                      setEditMeal(null);
+                    }}
+                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors duration-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-yellow-gold1 text-green-ziti rounded hover:bg-yellow-500 transition-colors duration-300"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Meals Grid */}
+      {isLoading ? (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-gold1 mx-auto"></div>
+          <p className="text-yellow-gold1 mt-4">Loading meals...</p>
+        </div>
+      ) : filteredMeals.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredMeals.map((meal) => (
+            <motion.div
+              key={meal.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="bg-green-ziti rounded-lg shadow-lg overflow-hidden flex flex-col"
+            >
+              <div className="relative w-full aspect-square">
+                <img
+                  src={meal.pic}
+                  alt={meal.name}
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                  onError={(e) => {
+                    console.error('Image failed to load:', {
+                      mealName: meal.name,
+                      picPath: meal.pic,
+                      fullUrl: e.target.src,
+                      timestamp: new Date().toISOString()
+                    });
+                    e.target.onerror = null;
+                    e.target.src = '/pic/placeholder.jpg';
+                  }}
+                />
+                <div className="absolute top-2 right-2 flex space-x-2">
+                  <button
+                    onClick={() => handleEditClick(meal)}
+                    className="p-2 bg-yellow-gold1 text-green-ziti rounded-full hover:bg-yellow-500 transition-colors duration-300"
+                  >
+                    <FaPencilAlt />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteMeal(meal.id)}
+                    className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              </div>
+              <div className="p-4 flex-grow flex flex-col">
+                <h3 className="text-xl font-bold text-yellow-gold1 mb-2">{meal.name}</h3>
+                <p className="text-gray-300 mb-2 flex-grow">{meal.description}</p>
+                <div className="flex justify-between items-center mt-auto">
+                  <span className="text-yellow-gold1 font-bold">${meal.price}</span>
+                  <div className="flex items-center">
+                    <FaStar className="text-yellow-400 mr-1" />
+                    <span className="text-yellow-gold1">{meal.rating}</span>
+                  </div>
+                </div>
+                <div className="mt-2 text-sm text-gray-400">
+                  Popularity: {meal.popularity}
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
       ) : (
-        <div className="bg-green-ziti p-8 rounded-lg text-center transform transition-all duration-500 hover:shadow-2xl">
-          <p className="text-yellow-gold1 text-xl animate-pulse">
-            No products found matching your criteria.
-          </p>
+        <div className="text-center py-8 bg-green-ziti rounded-lg">
+          <p className="text-yellow-gold1 text-xl">No meals found matching your criteria.</p>
         </div>
       )}
     </div>
   );
 };
+
+// Stat Card Component
+const StatCard = ({ icon, label, value, subValue }) => (
+  <div className="bg-green-ziti rounded-lg p-4 shadow-lg">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-gray-400 text-sm">{label}</p>
+        <p className="text-yellow-gold1 text-2xl font-bold">{value}</p>
+        {subValue && <p className="text-gray-300 text-sm">{subValue}</p>}
+      </div>
+      <div className="text-2xl text-yellow-gold1">{icon}</div>
+    </div>
+  </div>
+);
 
 export default AdminMenu;

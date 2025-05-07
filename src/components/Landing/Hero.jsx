@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import Navbar from "./Navbar";
 import Svg from "./svgn2";
 import Herosvg from "../../herosvg";
@@ -18,25 +18,25 @@ const backgrounds = [
 // text for each background image
 const texts = [
   {
-    tage: "Wellcom to our delicious corner",
-    title: "Creative Design & Architecture",
-    description:
-      "Innovative solutions for modern spaces and timeless aesthetics",
+    tag: "Welcome to Our Culinary Journey",
+    title: "Exquisite Dining Experience",
+    description: "Discover the perfect blend of traditional flavors and modern culinary artistry",
   },
   {
-    tage: "Wellcom to our delicious corner",
-    title: "Modern Living Spaces",
-    description: "Experience the perfect blend of comfort and design",
+    tag: "A Taste of Excellence",
+    title: "Signature Dishes",
+    description: "Experience our chef's masterpieces crafted with passion and premium ingredients",
   },
   {
-    tage: "Wellcom to our delicious corner",
-    title: "Architecture & Innovation",
-    description: "Transforming ideas into reality with cutting-edge designs",
+    tag: "Fine Dining Redefined",
+    title: "Elegant Atmosphere",
+    description: "Immerse yourself in an ambiance of sophistication and exceptional service",
   },
 ];
 
 const Hero = () => {
   const [bgIndex, setBgIndex] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,6 +52,7 @@ const Hero = () => {
     if (bgElement) {
       bgElement.style.transform = `translateY(${scrollPosition * 0.5}px)`;
     }
+    setIsScrolled(scrollPosition > 50);
   };
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section id="home" className="relative z-21 h-screen flex items-center">
+    <section id="home" className="relative z-21 h-screen flex items-center justify-center">
       {/* background and content */}
       <div className="absolute inset-0 w-full h-full hero-background">
         <AnimatePresence>
@@ -80,8 +81,11 @@ const Hero = () => {
               backgroundPosition: "center",
             }}
           >
-            <Navbar />
-            <div className="text-yellow-gold text-center items-center px-6">
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50" />
+            
+            <Navbar isScrolled={isScrolled} />
+            <div className="text-yellow-gold text-center items-center px-4 sm:px-6 md:px-8 lg:px-12 relative z-10 w-full max-w-7xl mx-auto mt-16">
               {/* Tagline with new animation */}
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
@@ -92,9 +96,9 @@ const Hero = () => {
                   ease: "easeOut",
                   delay: 0.7,
                 }}
-                className="text-xl jdid text-yellow-gold mb-8 font-light tracking-wider"
+                className="text-base sm:text-lg md:text-xl jdid text-yellow-gold mb-4 sm:mb-6 md:mb-8 font-light tracking-wider uppercase"
               >
-                {texts[bgIndex].tage}
+                {texts[bgIndex].tag}
               </motion.p>
 
               {/* Title with enhanced animation */}
@@ -107,19 +111,19 @@ const Hero = () => {
                   ease: "easeOut",
                   delay: 0.5,
                 }}
-                className="text-[15rem] gap-x-4 items-center flex md:text-7xl font-custom mb-6 relative"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-custom mb-4 sm:mb-6 relative"
                 style={{
                   fontFamily: "font1, sans-serif",
-                  fontSize: "25rem !important",
                 }}
               >
-                <Svg />
-                {texts[bgIndex].title}
-
-                <Svg />
+                <span className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
+                  <Svg className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16" />
+                  {texts[bgIndex].title}
+                  <Svg className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16" />
+                </span>
               </motion.h1>
 
-              {/* Description  */}
+              {/* Description */}
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -129,38 +133,73 @@ const Hero = () => {
                   ease: "easeOut",
                   delay: 1,
                 }}
-                className="text-xl text-gray-300 mb-8 font-light"
+                className="text-base sm:text-lg md:text-xl text-gray-200 mb-8 sm:mb-10 md:mb-12 font-light max-w-3xl mx-auto leading-relaxed px-4"
               >
                 {texts[bgIndex].description}
               </motion.p>
 
-              {/* Button*/}
-              <motion.button
-                whileHover={{ scale: 1.1, backgroundColor: "#ffcc00" }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{
-                  duration: 1.5,
-                  ease: "easeOut",
-                  delay: 1.5,
-                }}
-                className="text-yellow-gold flex mx-auto px-6 py-3 border-2 border-yellow-gold text-lg font-medium transition duration-300 shadow-lg transform hover:scale-105"
-              >
-                View Portfolio
-                <ArrowRight className="ml-2" size={20} />
-              </motion.button>
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
+                <motion.button
+                  whileHover={{ scale: 1.05, backgroundColor: "#ffcc00" }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{
+                    duration: 1.5,
+                    ease: "easeOut",
+                    delay: 1.5,
+                  }}
+                  className="text-yellow-gold flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 border-2 border-yellow-gold text-base sm:text-lg font-medium transition duration-300 shadow-lg hover:shadow-yellow-gold/30 w-full sm:w-auto"
+                >
+                  View Menu
+                  <ArrowRight className="ml-2" size={20} />
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05, backgroundColor: "#ffcc00" }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{
+                    duration: 1.5,
+                    ease: "easeOut",
+                    delay: 1.7,
+                  }}
+                  className="bg-yellow-gold text-green-ziti flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium transition duration-300 shadow-lg hover:shadow-yellow-gold/30 w-full sm:w-auto"
+                >
+                  Book a Table
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="absolute cursor-pointer left-10 top-1/2 transform -translate-y-1/2">
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-yellow-gold"
+      >
+        <span className="text-xs sm:text-sm mb-2">Scroll to explore</span>
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <ChevronDown size={20} className="sm:w-6 sm:h-6" />
+        </motion.div>
+      </motion.div>
+
+      {/* Decorative elements */}
+      <div className="hidden md:block absolute cursor-pointer left-10 top-1/2 transform -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity">
         <Herosvg />
       </div>
 
-      <div className="absolute cursor-pointer right-10 top-1/2 transform rotate-180 -translate-y-1/2">
+      <div className="hidden md:block absolute cursor-pointer right-10 top-1/2 transform rotate-180 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity">
         <Herosvg />
       </div>
     </section>

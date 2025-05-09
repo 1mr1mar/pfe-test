@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 07 mai 2025 à 03:42
+-- Généré le : ven. 09 mai 2025 à 02:05
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -145,6 +145,20 @@ INSERT INTO `customers` (`id`, `name`, `email`, `phone`, `address`, `reservation
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `logs`
+--
+
+CREATE TABLE `logs` (
+  `id` int(11) NOT NULL,
+  `user_role` varchar(50) DEFAULT NULL,
+  `action_type` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `action_time` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `meals`
 --
 
@@ -212,6 +226,28 @@ CREATE TABLE `orders` (
   `total_price` decimal(10,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Déchargement des données de la table `orders`
+--
+
+INSERT INTO `orders` (`id`, `customer_id`, `order_date`, `status`, `reservation_id`, `delivery_address`, `total_price`) VALUES
+(1, 2, '2025-05-01 12:30:00', 'pending', 1, NULL, 150.00),
+(2, 3, '2025-05-01 13:00:00', 'completed', NULL, '123 Main St', 85.50),
+(3, 5, '2025-05-01 14:15:00', 'delivered', NULL, '456 Elm St', 92.00),
+(4, 1, '2025-05-01 15:00:00', 'preparing', 2, NULL, 130.00),
+(5, 4, '2025-05-01 16:00:00', 'canceled', NULL, '789 Oak St', 65.75),
+(6, 2, '2025-05-02 11:30:00', 'completed', NULL, '101 Pine St', 120.00),
+(7, 6, '2025-05-02 13:45:00', 'pending', 3, NULL, 175.00),
+(8, 7, '2025-05-02 14:00:00', 'completed', NULL, '202 Maple Ave', 95.90),
+(9, 8, '2025-05-02 17:00:00', 'delivered', NULL, '303 Cedar Blvd', 110.20),
+(10, 3, '2025-05-03 12:00:00', 'pending', 4, NULL, 88.00),
+(11, 9, '2025-05-03 14:00:00', 'completed', NULL, '404 Birch Rd', 70.00),
+(12, 10, '2025-05-03 15:30:00', 'preparing', 5, NULL, 125.50),
+(13, 1, '2025-05-03 16:45:00', 'pending', NULL, '505 Spruce Ln', 98.30),
+(14, 4, '2025-05-04 10:30:00', 'completed', NULL, '606 Walnut St', 105.60),
+(15, 5, '2025-05-04 13:00:00', 'delivered', NULL, '707 Poplar St', 115.20),
+(42, 1, '2025-05-08 22:54:14', 'Delivered', 2, 'hhhhhhhhhhhhhhh', 80.60);
+
 -- --------------------------------------------------------
 
 --
@@ -224,6 +260,47 @@ CREATE TABLE `order_items` (
   `meal_id` int(11) DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Déchargement des données de la table `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `meal_id`, `quantity`, `price`) VALUES
+(35, 1, 121, 2, NULL),
+(36, 1, 122, 1, NULL),
+(37, 2, 130, 3, NULL),
+(38, 2, 123, 1, NULL),
+(39, 3, 133, 2, NULL),
+(40, 3, 135, 1, NULL),
+(41, 4, 124, 1, NULL),
+(42, 4, 138, 2, NULL),
+(43, 5, 143, 2, NULL),
+(44, 5, 144, 3, NULL),
+(45, 6, 125, 1, NULL),
+(46, 6, 132, 2, NULL),
+(47, 7, 145, 2, NULL),
+(48, 7, 140, 1, NULL),
+(49, 8, 127, 2, NULL),
+(50, 8, 129, 2, NULL),
+(51, 9, 137, 1, NULL),
+(52, 9, 139, 1, NULL),
+(53, 10, 136, 3, NULL),
+(54, 10, 142, 2, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `payments`
+--
+
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) DEFAULT NULL,
+  `payment_method` varchar(50) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `payment_status` varchar(50) DEFAULT NULL,
+  `payment_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -263,6 +340,20 @@ INSERT INTO `reservations` (`id`, `reservation_time`, `number_of_people`, `table
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `id` int(11) NOT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `rating` float DEFAULT NULL CHECK (`rating` between 1 and 5),
+  `comment` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `tables`
 --
 
@@ -283,24 +374,6 @@ INSERT INTO `tables` (`id`, `table_number`, `capacity`) VALUES
 (4, 4, 6),
 (5, 5, 8),
 (6, 6, 10);
-
---
--- Structure de la table `bookings`
---
-
-CREATE TABLE `bookings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `date` date NOT NULL,
-  `time` time NOT NULL,
-  `guests` int(11) NOT NULL,
-  `message` text DEFAULT NULL,
-  `status` enum('pending','confirmed','cancelled') NOT NULL DEFAULT 'pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Index pour les tables déchargées
@@ -328,6 +401,12 @@ ALTER TABLE `customers`
   ADD KEY `table_id` (`table_id`);
 
 --
+-- Index pour la table `logs`
+--
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `meals`
 --
 ALTER TABLE `meals`
@@ -352,11 +431,25 @@ ALTER TABLE `order_items`
   ADD KEY `meal_id` (`meal_id`);
 
 --
+-- Index pour la table `payments`
+--
+ALTER TABLE `payments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_id` (`order_id`);
+
+--
 -- Index pour la table `reservations`
 --
 ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id`),
   ADD KEY `table_id` (`table_id`);
+
+--
+-- Index pour la table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`);
 
 --
 -- Index pour la table `tables`
@@ -387,6 +480,12 @@ ALTER TABLE `customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT pour la table `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `meals`
 --
 ALTER TABLE `meals`
@@ -396,19 +495,31 @@ ALTER TABLE `meals`
 -- AUTO_INCREMENT pour la table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT pour la table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+
+--
+-- AUTO_INCREMENT pour la table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `reservations`
 --
 ALTER TABLE `reservations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT pour la table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `tables`
@@ -449,10 +560,22 @@ ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`meal_id`) REFERENCES `meals` (`id`) ON DELETE SET NULL;
 
 --
+-- Contraintes pour la table `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
+
+--
 -- Contraintes pour la table `reservations`
 --
 ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`) ON DELETE SET NULL;
+
+--
+-- Contraintes pour la table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -4,6 +4,8 @@ import { useInView } from "react-intersection-observer";
 import Svg from "./svgn2";
 import SvgI from "./svgn4";
 import { Calendar, Clock, Users, Phone, Mail, MapPin } from "lucide-react";
+import axiosConfig from "../../axiosConfig";
+import { toast } from "react-toastify";
 
 const Booking = () => {
   const { ref, inView } = useInView({
@@ -21,10 +23,31 @@ const Booking = () => {
     message: "",
   });
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    setIsSubmitting(true);
+
+    try {
+      const response = await axiosConfig.post("/bookings", formData);
+      toast.success("Booking submitted successfully! We'll contact you shortly.");
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        date: "",
+        time: "",
+        guests: "2",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error submitting booking:", error);
+      toast.error(error.response?.data?.error || "Failed to submit booking. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -204,11 +227,14 @@ const Booking = () => {
           </div>
           <motion.button
             type="submit"
+            disabled={isSubmitting}
             whileHover={{ scale: 1.05, backgroundColor: "#ffcc00" }}
             whileTap={{ scale: 0.95 }}
-            className="w-full mt-8 text-yellow-gold px-8 py-4 border-2 border-yellow-gold text-lg font-medium transition duration-300 shadow-lg hover:shadow-yellow-gold/30 flex items-center justify-center"
+            className={`w-full mt-8 text-yellow-gold px-8 py-4 border-2 border-yellow-gold text-lg font-medium transition duration-300 shadow-lg hover:shadow-yellow-gold/30 flex items-center justify-center ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Book Now
+            {isSubmitting ? "Submitting..." : "Book Now"}
           </motion.button>
         </form>
       </motion.div>

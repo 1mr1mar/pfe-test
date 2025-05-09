@@ -16,6 +16,8 @@
     "@mui/material": "^7.1.0",
     "@mui/x-date-pickers": "^8.2.0",
     "@radix-ui/react-slot": "^1.1.2",
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.3.0",
     "@tailwindcss/vite": "^4.0.14",
     "aos": "^2.3.4",
     "axios": "^1.9.0",

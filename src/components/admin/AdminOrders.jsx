@@ -10,6 +10,8 @@ import {
   FaUser,
   FaEdit,
   FaTrash,
+  FaChevronDown,
+  FaChevronUp,
 } from "react-icons/fa";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +24,7 @@ const AdminOrders = () => {
   const [filterStatus, setFilterStatus] = useState("All");
   const [sortOption, setSortOption] = useState("date-desc");
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalRevenue: 0,
@@ -147,6 +150,10 @@ const AdminOrders = () => {
     }
   };
 
+  const toggleOrderExpand = (orderId) => {
+    setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
+  };
+
   return (
     <div className="p-6 bg-green-khzy">
       {/* Header with Stats */}
@@ -242,10 +249,13 @@ const AdminOrders = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-green-ziti rounded-lg shadow-lg overflow-hidden"
+              className="bg-green-ziti border-1 border-yellow-gold rounded-lg shadow-lg overflow-hidden"
             >
               <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
+                <div 
+                  className="flex justify-between items-start mb-4 cursor-pointer"
+                  onClick={() => toggleOrderExpand(order.id)}
+                >
                   <div>
                     <h3 className="text-xl font-bold text-yellow-gold1">
                       Order #{order.id}
@@ -254,13 +264,20 @@ const AdminOrders = () => {
                       {new Date(order.order_date).toLocaleString()}
                     </p>
                   </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(
-                      order.status
-                    )}`}
-                  >
-                    {order.status}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm text-yellow-gold font-semibold ${getStatusColor(
+                        order.status
+                      )}`}
+                    >
+                      {order.status}
+                    </span>
+                    {expandedOrderId === order.id ? (
+                      <FaChevronUp className="text-yellow-gold1" />
+                    ) : (
+                      <FaChevronDown className="text-yellow-gold1" />
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-3 mb-4">
@@ -286,7 +303,34 @@ const AdminOrders = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-end space-x-2">
+                {/* Order Items Section */}
+                {expandedOrderId === order.id && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 border-t border-yellow-gold1 pt-4"
+                  >
+                    <h4 className="text-lg font-semibold text-yellow-gold1 mb-3">Order Items</h4>
+                    <div className="space-y-2">
+                      {order.meal_ids && order.meal_ids.split(',').map((mealId, index) => {
+                        const mealName = order.meal_names.split(',')[index];
+                        const quantity = order.quantities.split(',')[index];
+                        return (
+                          <div key={mealId} className="flex justify-between items-center text-gray-300">
+                            <div className="flex items-center">
+                              <span className="mr-2">•</span>
+                              <span>{mealName}</span>
+                            </div>
+                            <span className="text-yellow-gold1">x{quantity}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+
+                <div className="flex justify-end space-x-2 mt-4">
                   <select
                     value={order.status}
                     onChange={(e) => handleStatusChange(order.id, e.target.value)}

@@ -285,6 +285,24 @@ INSERT INTO `tables` (`id`, `table_number`, `capacity`) VALUES
 (6, 6, 10);
 
 --
+-- Structure de la table `bookings`
+--
+
+CREATE TABLE `bookings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `date` date NOT NULL,
+  `time` time NOT NULL,
+  `guests` int(11) NOT NULL,
+  `message` text DEFAULT NULL,
+  `status` enum('pending','confirmed','cancelled') NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
 -- Index pour les tables déchargées
 --
 

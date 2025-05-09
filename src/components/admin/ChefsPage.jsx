@@ -1,81 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaSort, FaFilter, FaStar, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const ChefsPage = () => {
-  const [chefs, setChefs] = useState([
-    {
-      id: 1,
-      name: "Chef Taha Oumane",
-      title: "Executive Chef",
-      image: "/pic/inner-pages-img-16.jpg",
-      bio: "An expert in French cuisine with over 15 years of experience in crafting fine dining dishes.",
-      specialties: ["French Cuisine", "Fine Dining"],
-      experience: "15+ years",
-      testimonials: [
-        {
-          id: 1,
-          customer: "Sarah Johnson",
-          rating: 5,
-          comment: "Chef Taha's French cuisine is absolutely divine! The attention to detail is remarkable."
-        },
-        {
-          id: 2,
-          customer: "Michael Chen",
-          rating: 5,
-          comment: "An unforgettable dining experience. The flavors were perfectly balanced."
-        }
-      ]
-    },
-    {
-      id: 2,
-      name: "Chef marwan Mansour",
-      title: "Pastry Specialist",
-      image: "/pic/Meet-the-chef-img.jpg",
-      bio: "Passionate about elegant desserts and luxurious French mousses.",
-      specialties: ["Pastry", "Desserts"],
-      experience: "10+ years",
-      testimonials: [
-        {
-          id: 1,
-          customer: "Emma Davis",
-          rating: 5,
-          comment: "The desserts are works of art! Each bite is a heavenly experience."
-        },
-        {
-          id: 2,
-          customer: "James Wilson",
-          rating: 5,
-          comment: "Chef Marwan's pastries are simply magical. The chocolate mousse is to die for!"
-        }
-      ]
-    },
-    {
-      id: 3,
-      name: "Chef Sami Youssef",
-      title: "Sushi Chef",
-      image: "/pic/inner-pages-img-17.jpg",
-      bio: "Creates authentic Japanese sushi with a modern artistic twist.",
-      specialties: ["Japanese Cuisine", "Sushi"],
-      experience: "12+ years",
-      testimonials: [
-        {
-          id: 1,
-          customer: "Lisa Tanaka",
-          rating: 5,
-          comment: "The most authentic Japanese flavors I've experienced outside of Japan!"
-        },
-        {
-          id: 2,
-          customer: "David Kim",
-          rating: 5,
-          comment: "Chef Sami's sushi is a perfect blend of tradition and innovation."
-        }
-      ]
-    },
-  ]);
-
-  // Enhanced state management
+  const [chefs, setChefs] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingChef, setEditingChef] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -83,52 +13,73 @@ const ChefsPage = () => {
   const [filterBy, setFilterBy] = useState("all");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    title: "",
-    image: "",
-    bio: "",
-    specialties: "",
-    experience: "",
+    fullname: "",
+    specialization: "",
+    pic: "",
+    about: "",
   });
   const [expandedChef, setExpandedChef] = useState(null);
+
+  // Fetch chefs from the database
+  useEffect(() => {
+    const fetchChefs = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/chefs");
+        setChefs(response.data);
+      } catch (error) {
+        console.error("Error fetching chefs:", error);
+        toast.error("Failed to fetch chefs");
+      }
+    };
+
+    fetchChefs();
+  }, []);
 
   // Filter and sort chefs
   const filteredAndSortedChefs = chefs
     .filter((chef) => {
-      const matchesSearch = chef.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        chef.title.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesFilter = filterBy === "all" || chef.specialties.includes(filterBy);
+      const matchesSearch = chef.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        chef.specialization.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = filterBy === "all" || chef.specialization.includes(filterBy);
       return matchesSearch && matchesFilter;
     })
     .sort((a, b) => {
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      if (sortBy === "experience") return b.experience.localeCompare(a.experience);
+      if (sortBy === "name") return a.fullname.localeCompare(b.fullname);
+      if (sortBy === "specialization") return a.specialization.localeCompare(b.specialization);
       return 0;
     });
 
-  const handleDelete = (index) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this chef?")) {
-      const newChefs = [...chefs];
-      newChefs.splice(index, 1);
-      setChefs(newChefs);
+      try {
+        await axios.delete(`http://localhost:5000/api/chefs/${id}`);
+        setChefs(chefs.filter(chef => chef.id !== id));
+        toast.success("Chef deleted successfully");
+      } catch (error) {
+        console.error("Error deleting chef:", error);
+        toast.error("Failed to delete chef");
+      }
     }
   };
 
-  const handleEdit = (chef, index) => {
-    setEditingChef(index);
-    setFormData({ ...chef });
+  const handleEdit = (chef) => {
+    setEditingChef(chef.id);
+    setFormData({
+      fullname: chef.fullname,
+      specialization: chef.specialization,
+      pic: chef.pic,
+      about: chef.about,
+    });
     setShowModal(true);
   };
 
   const handleAddNew = () => {
     setEditingChef(null);
     setFormData({
-      name: "",
-      title: "",
-      image: "",
-      bio: "",
-      specialties: "",
-      experience: "",
+      fullname: "",
+      specialization: "",
+      pic: "",
+      about: "",
     });
     setShowModal(true);
   };
@@ -144,14 +95,10 @@ const ChefsPage = () => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({
-          ...formData,
-          image: reader.result,
-        });
-      };
-      reader.readAsDataURL(file);
+      setFormData({
+        ...formData,
+        pic: file,
+      });
     }
   };
 
@@ -160,31 +107,39 @@ const ChefsPage = () => {
     setIsLoading(true);
 
     try {
-      const newChef = {
-        ...formData,
-        id: editingChef !== null ? chefs[editingChef].id : Date.now(),
-        specialties: formData.specialties.split(",").map(s => s.trim()),
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append("fullname", formData.fullname);
+      formDataToSend.append("specialization", formData.specialization);
+      formDataToSend.append("about", formData.about);
+      if (formData.pic instanceof File) {
+        formDataToSend.append("pic", formData.pic);
+      }
 
-      if (editingChef !== null) {
-        const updatedChefs = [...chefs];
-        updatedChefs[editingChef] = newChef;
-        setChefs(updatedChefs);
+      let response;
+      if (editingChef) {
+        response = await axios.put(`http://localhost:5000/api/chefs/${editingChef}`, formDataToSend);
+        setChefs(chefs.map(chef => 
+          chef.id === editingChef 
+            ? { ...chef, ...formData, pic: response.data.pic || chef.pic }
+            : chef
+        ));
+        toast.success("Chef updated successfully");
       } else {
-        setChefs([...chefs, newChef]);
+        response = await axios.post("http://localhost:5000/api/chefs", formDataToSend);
+        setChefs([...chefs, { ...formData, id: response.data.id, pic: response.data.pic }]);
+        toast.success("Chef added successfully");
       }
 
       setShowModal(false);
       setFormData({
-        name: "",
-        title: "",
-        image: "",
-        bio: "",
-        specialties: "",
-        experience: "",
+        fullname: "",
+        specialization: "",
+        pic: "",
+        about: "",
       });
     } catch (error) {
       console.error("Error saving chef:", error);
+      toast.error("Failed to save chef");
     } finally {
       setIsLoading(false);
     }
@@ -214,7 +169,7 @@ const ChefsPage = () => {
               className="bg-green-ziti text-gray-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-gold1"
             >
               <option value="name">Sort by Name</option>
-              <option value="experience">Sort by Experience</option>
+              <option value="specialization">Sort by Specialization</option>
             </select>
             <button
               onClick={handleAddNew}
@@ -227,7 +182,7 @@ const ChefsPage = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence>
-            {filteredAndSortedChefs.map((chef, index) => (
+            {filteredAndSortedChefs.map((chef) => (
               <motion.div
                 key={chef.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -242,77 +197,29 @@ const ChefsPage = () => {
                 >
                   <div className="relative group">
                     <img
-                      src={chef.image}
-                      alt={chef.name}
+                      src={chef.pic || "/pic/default-chef.jpg"}
+                      alt={chef.fullname}
                       className="w-full h-170 object-cover rounded-xl mb-4 transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                   <div className="flex justify-between items-center">
-                    <h3 className="text-2xl font-bold text-yellow-gold1 mb-2">{chef.name}</h3>
+                    <h3 className="text-2xl font-bold text-yellow-gold1 mb-2">{chef.fullname}</h3>
                     <button className="text-yellow-gold1 hover:text-yellow-gold transition-colors duration-300">
                       {expandedChef === chef.id ? <FaChevronUp /> : <FaChevronDown />}
                     </button>
                   </div>
-                  <p className="text-yellow-gold mb-2">{chef.title}</p>
-                  <p className="text-sm mb-3">{chef.bio}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {chef.specialties.map((specialty, i) => (
-                      <span key={i} className="bg-green-khzy text-yellow-gold1 px-3 py-1 rounded-full text-sm">
-                        {specialty}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-sm text-gray-300 mb-4">Experience: {chef.experience}</p>
+                  <p className="text-yellow-gold mb-2">{chef.specialization}</p>
+                  <p className="text-sm mb-3">{chef.about}</p>
                 </div>
-
-                {/* Testimonials Section */}
-                <AnimatePresence>
-                  {expandedChef === chef.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="mt-6 border-t border-green-khzy pt-4">
-                        <h4 className="text-lg font-semibold mb-3 text-yellow-gold1">Customer Reviews</h4>
-                        <div className="space-y-4">
-                          {chef.testimonials.map((testimonial) => (
-                            <motion.div
-                              key={testimonial.id}
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -20 }}
-                              className="bg-green-khzy p-4 rounded-lg"
-                            >
-                              <div className="flex items-center mb-2">
-                                <div className="flex text-yellow-gold1">
-                                  {[...Array(testimonial.rating)].map((_, i) => (
-                                    <FaStar key={i} />
-                                  ))}
-                                </div>
-                                <span className="ml-2 text-sm font-medium text-gray-200">
-                                  {testimonial.customer}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-300">{testimonial.comment}</p>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
 
                 <div className="flex space-x-4 mt-6">
                   <button
                     className="text-yellow-gold1 hover:text-yellow-gold p-2 rounded-full hover:bg-green-khzy transition-all duration-300 transform hover:scale-110"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleEdit(chef, index);
+                      handleEdit(chef);
                     }}
-                    aria-label={`Edit ${chef.name}`}
+                    aria-label={`Edit ${chef.fullname}`}
                   >
                     <FaEdit />
                   </button>
@@ -320,9 +227,9 @@ const ChefsPage = () => {
                     className="text-red-400 hover:text-red-300 p-2 rounded-full hover:bg-green-khzy transition-all duration-300 transform hover:scale-110"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDelete(index);
+                      handleDelete(chef.id);
                     }}
-                    aria-label={`Delete ${chef.name}`}
+                    aria-label={`Delete ${chef.fullname}`}
                   >
                     <FaTrash />
                   </button>
@@ -355,45 +262,21 @@ const ChefsPage = () => {
                     <label className="block text-yellow-gold1 mb-2">Name</label>
                     <input
                       type="text"
-                      name="name"
-                      value={formData.name}
+                      name="fullname"
+                      value={formData.fullname}
                       onChange={handleInputChange}
                       className="w-full bg-green-khzy border border-green-khzy rounded-lg p-3 text-gray-200 focus:ring-2 focus:ring-yellow-gold1 focus:outline-none"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-yellow-gold1 mb-2">Title</label>
+                    <label className="block text-yellow-gold1 mb-2">Specialization</label>
                     <input
                       type="text"
-                      name="title"
-                      value={formData.title}
+                      name="specialization"
+                      value={formData.specialization}
                       onChange={handleInputChange}
                       className="w-full bg-green-khzy border border-green-khzy rounded-lg p-3 text-gray-200 focus:ring-2 focus:ring-yellow-gold1 focus:outline-none"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-yellow-gold1 mb-2">Experience</label>
-                    <input
-                      type="text"
-                      name="experience"
-                      value={formData.experience}
-                      onChange={handleInputChange}
-                      className="w-full bg-green-khzy border border-green-khzy rounded-lg p-3 text-gray-200 focus:ring-2 focus:ring-yellow-gold1 focus:outline-none"
-                      placeholder="e.g., 10+ years"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-yellow-gold1 mb-2">Specialties</label>
-                    <input
-                      type="text"
-                      name="specialties"
-                      value={formData.specialties}
-                      onChange={handleInputChange}
-                      className="w-full bg-green-khzy border border-green-khzy rounded-lg p-3 text-gray-200 focus:ring-2 focus:ring-yellow-gold1 focus:outline-none"
-                      placeholder="e.g., French Cuisine, Pastry"
                       required
                     />
                   </div>
@@ -410,8 +293,8 @@ const ChefsPage = () => {
                 <div>
                   <label className="block text-yellow-gold1 mb-2">Bio</label>
                   <textarea
-                    name="bio"
-                    value={formData.bio}
+                    name="about"
+                    value={formData.about}
                     onChange={handleInputChange}
                     className="w-full bg-green-khzy border border-green-khzy rounded-lg p-3 text-gray-200 h-32 focus:ring-2 focus:ring-yellow-gold1 focus:outline-none"
                     required
